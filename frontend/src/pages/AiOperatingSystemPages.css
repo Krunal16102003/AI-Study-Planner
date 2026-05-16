@@ -1,0 +1,723 @@
+.aios {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 18px;
+  min-height: 70vh;
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 18px;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(104, 225, 253, 0.2), transparent 28%),
+    radial-gradient(circle at 85% 18%, rgba(182, 243, 106, 0.16), transparent 24%),
+    linear-gradient(135deg, #081016, #111827 52%, #071118);
+  color: #f8fbff;
+}
+
+.aios--violet { background: radial-gradient(circle at 15% 10%, rgba(143, 140, 255, 0.28), transparent 28%), linear-gradient(135deg, #090b18, #17112a 55%, #071118); }
+.aios--green { background: radial-gradient(circle at 18% 8%, rgba(91, 247, 175, 0.24), transparent 28%), linear-gradient(135deg, #071411, #11201c 55%, #081117); }
+.aios--amber { background: radial-gradient(circle at 18% 8%, rgba(255, 207, 90, 0.24), transparent 28%), linear-gradient(135deg, #161107, #1f1a11 55%, #071118); }
+.aios--red { background: radial-gradient(circle at 18% 8%, rgba(255, 89, 120, 0.24), transparent 28%), linear-gradient(135deg, #16090c, #211015 55%, #071118); }
+
+.aios h1,
+.aios h2,
+.aios p {
+  margin: 0;
+}
+
+.aios h1 {
+  max-width: 980px;
+  font-size: clamp(34px, 5vw, 68px);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.aios h2 {
+  font-size: clamp(18px, 2.4vw, 28px);
+  letter-spacing: 0;
+}
+
+.aios p {
+  color: rgba(238, 247, 255, 0.78);
+  line-height: 1.65;
+}
+
+.aios-particles {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.aios-particles i {
+  position: absolute;
+  left: calc((var(--i) * 67px) % 100%);
+  top: calc((var(--i) * 43px) % 100%);
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 18px rgba(104, 225, 253, 0.8);
+  animation: floatParticle 6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -240ms);
+}
+
+.aios-hero,
+.aios-glass {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.055));
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(20px);
+}
+
+.aios-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+  min-height: 250px;
+  padding: clamp(22px, 4vw, 44px);
+}
+
+.aios-hero p {
+  max-width: 760px;
+  margin-top: 18px;
+  font-size: 17px;
+}
+
+.aios-eyebrow,
+.aios-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: #9df0ff;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.aios-orb {
+  flex: 0 0 132px;
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  border: 1px solid rgba(157, 240, 255, 0.34);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(157, 240, 255, 0.22), transparent 58%),
+    conic-gradient(from 0deg, rgba(104, 225, 253, 0.1), rgba(182, 243, 106, 0.36), rgba(143, 140, 255, 0.18), rgba(104, 225, 253, 0.1));
+}
+
+.aios-glass {
+  padding: 18px;
+}
+
+.aios-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.aios-grid--hero,
+.aios-grid--two,
+.aios-grid--mentor,
+.clone-compare {
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+}
+
+.aios-grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dna-card {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.55fr) 1fr;
+  gap: 20px;
+  align-items: center;
+  min-height: 310px;
+}
+
+.dna-helix {
+  position: relative;
+  height: 250px;
+}
+
+.dna-helix span {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--i) * 13px);
+  width: 112px;
+  height: 2px;
+  transform: translateX(-50%) rotate(calc(var(--i) * 18deg));
+  background: linear-gradient(90deg, #68e1fd, #b6f36a);
+  box-shadow: 0 0 18px rgba(104, 225, 253, 0.5);
+  animation: dnaPulse 2.4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -80ms);
+}
+
+.dna-helix span::before,
+.dna-helix span::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f8fbff;
+}
+
+.dna-helix span::before { left: 0; }
+.dna-helix span::after { right: 0; }
+
+.aios-metric-list,
+.aios-insights,
+.mentor-chat > div {
+  display: grid;
+  gap: 10px;
+}
+
+.aios-metric-list p,
+.aios-insights p,
+.leader-row,
+.war-step {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.075);
+  padding: 12px;
+}
+
+.aios-metric-list span,
+.leader-row span,
+.leader-row small {
+  color: #b6f36a;
+  font-weight: 800;
+}
+
+.aios-ring {
+  display: grid;
+  place-items: center;
+  min-height: 190px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at center, rgba(9, 17, 24, 0.94) 0 54%, transparent 55%),
+    conic-gradient(#68e1fd 0 calc(var(--value) * 1%), rgba(255, 255, 255, 0.12) 0 100%);
+  text-align: center;
+}
+
+.aios-ring strong {
+  display: block;
+  font-size: 34px;
+}
+
+.aios-ring span,
+.aios-ring small {
+  display: block;
+  color: rgba(238, 247, 255, 0.72);
+}
+
+.aios-bars {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  height: 260px;
+  padding-top: 20px;
+}
+
+.aios-bars span {
+  position: relative;
+  flex: 1;
+  min-width: 28px;
+  height: var(--h);
+  border-radius: 8px 8px 3px 3px;
+  background: linear-gradient(180deg, #68e1fd, #b6f36a);
+  box-shadow: 0 0 24px rgba(104, 225, 253, 0.24);
+}
+
+.aios-bars b {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  width: 110px;
+  transform: translateX(-50%) rotate(-32deg);
+  transform-origin: center;
+  color: rgba(238, 247, 255, 0.72);
+  font-size: 11px;
+}
+
+.dna-radar {
+  position: relative;
+  min-height: 360px;
+  display: grid;
+  place-items: center;
+}
+
+.dna-radar svg {
+  width: min(360px, 100%);
+  filter: drop-shadow(0 0 24px rgba(104, 225, 253, 0.18));
+}
+
+.dna-radar circle,
+.dna-radar line {
+  fill: none;
+  stroke: rgba(157, 240, 255, 0.18);
+  stroke-width: 1;
+}
+
+.dna-radar polygon {
+  fill: rgba(104, 225, 253, 0.24);
+  stroke: #b6f36a;
+  stroke-width: 2;
+  transform-origin: center;
+}
+
+.dna-radar span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 116px;
+  transform: rotate(var(--a)) translate(0, -178px) rotate(var(--na)) translate(-50%, -50%);
+  color: rgba(238, 247, 255, 0.78);
+  font-size: 11px;
+  font-weight: 850;
+  text-align: center;
+}
+
+.dna-radar b {
+  display: block;
+  margin-top: 3px;
+  color: #b6f36a;
+  font-size: 13px;
+}
+
+.aios-slider {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  color: rgba(238, 247, 255, 0.78);
+}
+
+.aios-slider span,
+.aios-progress span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.aios-slider input {
+  accent-color: #68e1fd;
+}
+
+.forecast-card h2 {
+  max-width: 680px;
+  font-size: clamp(24px, 3.4vw, 42px);
+}
+
+.compare-track {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.compare-track span,
+.compare-track b {
+  display: block;
+  min-width: 120px;
+  border-radius: 999px;
+  padding: 10px 12px;
+}
+
+.compare-track span { background: rgba(255, 255, 255, 0.16); }
+.compare-track b { background: linear-gradient(90deg, #68e1fd, #b6f36a); color: #071118; }
+
+.aios-timeline {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.aios-timeline div {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(104, 225, 253, 0.22);
+  border-radius: 8px;
+  background: rgba(104, 225, 253, 0.08);
+}
+
+.aios-timeline span {
+  color: #b6f36a;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.energy-wave {
+  height: 140px;
+  margin-top: 18px;
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, transparent, rgba(104, 225, 253, 0.28), transparent),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 2px, transparent 2px 24px);
+  animation: waveShift 1.8s linear infinite;
+}
+
+.knowledge-map {
+  position: relative;
+  min-height: 620px;
+  overflow: hidden;
+}
+
+.knowledge-map svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.knowledge-map line {
+  stroke: rgba(104, 225, 253, 0.45);
+  stroke-width: 0.5;
+}
+
+.knowledge-node {
+  position: absolute;
+  width: min(210px, 42vw);
+  transform: translate(-50%, -50%);
+  border: 1px solid color-mix(in srgb, var(--node), white 28%);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--node), transparent 84%);
+  box-shadow: 0 0 34px color-mix(in srgb, var(--node), transparent 72%);
+  padding: 14px;
+}
+
+.knowledge-node strong,
+.knowledge-node span,
+.knowledge-node small {
+  display: block;
+}
+
+.knowledge-node span { color: #f8fbff; font-weight: 900; }
+.knowledge-node small { margin-top: 6px; color: rgba(238, 247, 255, 0.72); }
+
+.mentor-avatar {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-height: 520px;
+  text-align: center;
+}
+
+.mentor-avatar > div {
+  display: grid;
+  place-items: center;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(143, 140, 255, 0.35), rgba(104, 225, 253, 0.08));
+}
+
+.mentor-chat {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 520px;
+}
+
+.mentor-chat p {
+  width: fit-content;
+  max-width: 82%;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.mentor-chat .ai { background: rgba(255, 255, 255, 0.12); }
+.mentor-chat .user { justify-self: end; background: #68e1fd; color: #071118; }
+
+.mentor-chat form {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+}
+
+.arena-rooms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.arena-rooms .active {
+  background: linear-gradient(90deg, #ffcf5a, #68e1fd);
+  color: #071118;
+}
+
+.arena-timer {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  margin-top: 18px;
+  border-radius: 8px;
+  background: radial-gradient(circle, rgba(255, 207, 90, 0.2), rgba(255, 255, 255, 0.06));
+  font-size: clamp(52px, 9vw, 112px);
+  font-weight: 950;
+}
+
+.vault-door {
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+  background: radial-gradient(circle, rgba(91, 247, 175, 0.14), rgba(255, 255, 255, 0.06));
+}
+
+.curve {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  height: 270px;
+}
+
+.curve span {
+  flex: 1;
+  border-radius: 8px 8px 2px 2px;
+  background: linear-gradient(180deg, #b6f36a, #68e1fd);
+}
+
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  gap: 8px;
+}
+
+.heatmap i {
+  aspect-ratio: 1;
+  border-radius: 5px;
+  background: #b6f36a;
+}
+
+.universe {
+  position: relative;
+  min-height: 680px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(104, 225, 253, 0.13), transparent 12%),
+    rgba(255, 255, 255, 0.06);
+}
+
+.planet {
+  position: absolute;
+  inset: var(--orbit);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 50%;
+}
+
+.planet span {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  min-width: 92px;
+  min-height: 92px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff, var(--planet) 26%, #111827 72%);
+  box-shadow: 0 0 38px color-mix(in srgb, var(--planet), transparent 55%);
+  text-align: center;
+}
+
+.planet b,
+.planet small {
+  display: block;
+  max-width: 82px;
+  color: #071118;
+  font-size: 11px;
+}
+
+.sun-core {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffcf5a, #68e1fd 45%, rgba(255, 255, 255, 0.08) 72%);
+  color: #071118;
+  font-weight: 900;
+}
+
+.aios-progress {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.aios-progress i {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.aios-progress em {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #68e1fd, #b6f36a);
+}
+
+.war-step b {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #ff5978;
+  color: #fff;
+}
+
+.skill-tree {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.skill-node {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  border: 1px solid rgba(104, 225, 253, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.09);
+  text-align: center;
+}
+
+.skill-node span {
+  color: #b6f36a;
+  font-weight: 800;
+}
+
+.lab-bars {
+  display: flex;
+  align-items: end;
+  gap: 16px;
+  min-height: 360px;
+  perspective: 900px;
+}
+
+.lab-bars i {
+  position: relative;
+  flex: 1;
+  height: calc(var(--h) * 3px);
+  transform: rotateX(18deg) rotateY(-12deg);
+  border-radius: 8px 8px 2px 2px;
+  background: linear-gradient(180deg, #8f8cff, #68e1fd);
+  box-shadow: 12px 18px 0 rgba(143, 140, 255, 0.16);
+}
+
+.lab-bars span {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  width: 120px;
+  transform: translateX(-50%) rotate(-28deg);
+  color: rgba(238, 247, 255, 0.72);
+  font-size: 12px;
+  font-style: normal;
+}
+
+.clone-optimized {
+  box-shadow: 0 0 70px rgba(104, 225, 253, 0.22);
+}
+
+@keyframes floatParticle {
+  50% { transform: translateY(-22px); opacity: 0.45; }
+}
+
+@keyframes dnaPulse {
+  50% { filter: hue-rotate(70deg); transform: translateX(-50%) rotate(calc(var(--i) * 18deg + 10deg)); }
+}
+
+@keyframes waveShift {
+  to { background-position: 220px 0, 0 0; }
+}
+
+@media (max-width: 980px) {
+  .aios-grid--hero,
+  .aios-grid--two,
+  .aios-grid--mentor,
+  .clone-compare,
+  .skill-tree {
+    grid-template-columns: 1fr;
+  }
+
+  .aios-grid--three,
+  .aios-timeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aios-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .knowledge-map,
+  .universe {
+    min-height: 560px;
+  }
+}
+
+@media (max-width: 620px) {
+  .aios {
+    padding: 12px;
+  }
+
+  .aios-grid--three,
+  .aios-timeline,
+  .dna-card,
+  .mentor-chat form {
+    grid-template-columns: 1fr;
+  }
+
+  .aios-orb {
+    width: 104px;
+    height: 104px;
+    flex-basis: 104px;
+  }
+
+  .knowledge-node {
+    position: static;
+    width: 100%;
+    transform: none;
+    margin-bottom: 10px;
+  }
+
+  .knowledge-map svg {
+    display: none;
+  }
+
+  .heatmap {
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .lab-bars,
+  .aios-bars {
+    overflow-x: auto;
+  }
+
+  .lab-bars i,
+  .aios-bars span {
+    min-width: 54px;
+  }
+}
