@@ -406,7 +406,7 @@
 .knowledge-node span { color: #f8fbff; font-weight: 900; }
 .knowledge-node small { margin-top: 6px; color: rgba(238, 247, 255, 0.72); }
 
-.mentor-avatar {
+.aios .mentor-avatar {
   display: grid;
   place-items: center;
   align-content: center;
@@ -414,7 +414,7 @@
   text-align: center;
 }
 
-.mentor-avatar > div {
+.aios .mentor-avatar > div {
   display: grid;
   place-items: center;
   width: 190px;

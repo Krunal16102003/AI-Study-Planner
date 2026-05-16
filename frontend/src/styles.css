@@ -9838,3 +9838,1882 @@ button:not(.secondary):not(.ghost):not(.topbar-icon):not(.premium-nav-link):not(
     padding-inline: 10px;
   }
 }
+
+/* Career roadmap workspace */
+.career-workspace {
+  display: grid;
+  gap: 18px;
+}
+
+.career-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding: clamp(22px, 3vw, 34px);
+  overflow: hidden;
+}
+
+.career-hero h2 {
+  margin: 6px 0 10px;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1.05;
+}
+
+.career-hero p,
+.career-summary p,
+.career-project p,
+.career-phase p,
+.career-review p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.career-hero-score {
+  width: 164px;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 18px;
+  background: radial-gradient(circle at 50% 44%, rgba(59, 130, 246, 0.16), rgba(255, 255, 255, 0.72));
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.career-hero-score strong {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.career-hero-score span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.career-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.career-sidebar,
+.career-side-stack {
+  position: sticky;
+  top: 92px;
+}
+
+.career-form {
+  display: grid;
+  gap: 13px;
+}
+
+.career-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.career-main,
+.career-side-stack {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.career-readiness-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.career-metric {
+  min-height: 128px;
+  display: grid;
+  align-content: space-between;
+  gap: 10px;
+}
+
+.career-metric svg {
+  color: var(--accent);
+}
+
+.career-metric span,
+.career-project small,
+.career-skill small,
+.career-review small {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.career-metric strong {
+  font-size: 1.65rem;
+}
+
+.career-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+}
+
+.career-roadmap-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.75fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.career-timeline {
+  display: grid;
+  gap: 16px;
+}
+
+.career-phase {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.career-phase-marker {
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.career-phase-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.career-phase-head h3,
+.career-project h3 {
+  margin: 0;
+}
+
+.career-phase-head span,
+.career-badge {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.career-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.career-chip-row span {
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(15, 23, 42, 0.05);
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.career-gap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.career-gap:last-child {
+  border-bottom: 0;
+}
+
+.career-gap div,
+.career-skill div {
+  display: grid;
+  gap: 4px;
+}
+
+.career-gap span,
+.career-skill span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.career-gap b {
+  color: #b45309;
+}
+
+.career-insight {
+  display: grid;
+  gap: 5px;
+  margin: 0 0 10px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.career-insight strong {
+  color: var(--text);
+}
+
+.career-insight--warning {
+  background: rgba(245, 158, 11, 0.09);
+}
+
+.career-insight--success {
+  background: rgba(16, 185, 129, 0.09);
+}
+
+.career-skill-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.career-skill-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.career-skill {
+  display: grid;
+  gap: 9px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.career-project-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.career-project {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.career-badge {
+  width: fit-content;
+  text-transform: capitalize;
+}
+
+.career-interview {
+  display: grid;
+  gap: 12px;
+}
+
+.career-interview textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.career-interview-history {
+  display: grid;
+  gap: 12px;
+}
+
+.career-review {
+  display: grid;
+  gap: 8px;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.career-review > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.career-review strong {
+  color: var(--accent);
+  font-size: 1.2rem;
+}
+
+.career-empty {
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.career-empty svg {
+  color: var(--accent);
+}
+
+.career-empty p {
+  max-width: 620px;
+  color: var(--muted);
+}
+
+.career-skeleton {
+  min-height: 260px;
+  border-radius: 28px;
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.16), rgba(255, 255, 255, 0.75), rgba(148, 163, 184, 0.16));
+  background-size: 220% 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+.career-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.career-skeleton-grid span {
+  min-height: 180px;
+  border-radius: 20px;
+  background: rgba(148, 163, 184, 0.16);
+}
+
+@media (max-width: 1180px) {
+  .career-layout,
+  .career-roadmap-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .career-sidebar,
+  .career-side-stack {
+    position: static;
+  }
+
+  .career-readiness-grid,
+  .career-project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .career-hero,
+  .career-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .career-hero-score {
+    width: min(160px, 58vw);
+    justify-self: center;
+  }
+
+  .career-readiness-grid,
+  .career-project-grid,
+  .career-skill-grid,
+  .career-skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .career-phase,
+  .career-gap {
+    grid-template-columns: 1fr;
+  }
+
+  .career-phase-marker {
+    width: fit-content;
+    min-width: 38px;
+  }
+}
+
+/* Global SaaS UI polish layer */
+:root {
+  --ui-radius-xs: 8px;
+  --ui-radius-sm: 10px;
+  --ui-radius-md: 14px;
+  --ui-radius-lg: 18px;
+  --ui-radius-xl: 22px;
+  --ui-space-1: 4px;
+  --ui-space-2: 8px;
+  --ui-space-3: 12px;
+  --ui-space-4: 16px;
+  --ui-space-5: 20px;
+  --ui-space-6: 24px;
+  --ui-space-8: 32px;
+  --ui-control-height: 44px;
+  --ui-card-padding: clamp(16px, 2vw, 24px);
+  --ui-page-gap: clamp(16px, 2.2vw, 28px);
+  --ui-title-size: clamp(1.55rem, 2.5vw, 2.25rem);
+  --ui-section-title-size: clamp(1.05rem, 1.4vw, 1.35rem);
+  --ui-body-size: 0.95rem;
+  --ui-small-size: 0.82rem;
+  --ui-line-body: 1.65;
+  --ui-line-title: 1.15;
+}
+
+html {
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.app,
+.workspace-container,
+.dashboard-main,
+.page-content,
+.planning-page,
+.mentor-workspace,
+.career-workspace,
+.wellness-workspace,
+.resources-workspace,
+.mock-workspace,
+.subjects-workspace {
+  min-width: 0;
+}
+
+.app.premium-shell .dashboard-main,
+.premium-shell .dashboard-main,
+.main {
+  width: min(100%, 1500px);
+  margin-inline: auto;
+}
+
+.page-content,
+.planning-page,
+.mentor-workspace,
+.career-workspace,
+.wellness-workspace,
+.assistant-mentor-page {
+  display: grid;
+  gap: var(--ui-page-gap);
+}
+
+.topbar-title h1,
+.page-title h1 {
+  max-width: 920px;
+  font-size: var(--ui-title-size) !important;
+  line-height: var(--ui-line-title) !important;
+  font-weight: 850;
+}
+
+.topbar-title p,
+.page-title p,
+.section-heading span,
+.card-heading span,
+.dashboard-card__eyebrow,
+.eyebrow {
+  font-size: 0.76rem;
+  line-height: 1.35;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 850;
+}
+
+.section-heading h2,
+.card-heading h2,
+.dashboard-card__header h2,
+.panel > h2 {
+  font-size: var(--ui-section-title-size) !important;
+  line-height: 1.25 !important;
+  font-weight: 820;
+}
+
+.panel p,
+.dashboard-card p,
+.mentor-bubble p,
+.ai-assistant-bubble,
+.resource-card-premium p,
+.career-project p,
+.career-phase p {
+  font-size: var(--ui-body-size);
+  line-height: var(--ui-line-body);
+}
+
+.panel,
+.dashboard-card,
+.planning-page .panel,
+.premium-dashboard-card,
+.premium-kpi-card,
+.planning-stat,
+.plan-card,
+.plan-card-premium,
+.resource-card-premium,
+.quiz-card,
+.mock-question-card,
+.subject-card,
+.mentor-card,
+.career-project,
+.career-skill,
+.career-phase,
+.career-review,
+.notification-popover,
+.modal-card,
+.modal-content {
+  min-width: 0;
+  border-radius: var(--ui-radius-lg) !important;
+  padding: var(--ui-card-padding);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 14px 34px rgba(15, 23, 42, 0.06) !important;
+}
+
+.panel:hover,
+.dashboard-card:hover,
+.premium-dashboard-card:hover,
+.premium-kpi-card:hover,
+.plan-card:hover,
+.resource-card-premium:hover,
+.quiz-card:hover,
+.mock-question-card:hover,
+.subject-card:hover,
+.career-project:hover {
+  transform: translateY(-1px);
+}
+
+.dashboard-card {
+  display: grid;
+  gap: var(--ui-space-4);
+  align-content: start;
+}
+
+.dashboard-card--compact {
+  padding: clamp(14px, 1.6vw, 18px);
+  gap: var(--ui-space-3);
+}
+
+.dashboard-card--soft {
+  background: color-mix(in srgb, var(--theme-bg-card) 88%, var(--theme-accent-soft)) !important;
+}
+
+.dashboard-card--success {
+  background: color-mix(in srgb, var(--theme-bg-card) 88%, var(--theme-success-soft)) !important;
+}
+
+.dashboard-card--warning {
+  background: color-mix(in srgb, var(--theme-bg-card) 88%, var(--theme-warning-soft)) !important;
+}
+
+.dashboard-card__header,
+.card-heading,
+.section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ui-space-4);
+  min-width: 0;
+}
+
+.dashboard-card__header > div,
+.card-heading > div,
+.section-heading > div {
+  min-width: 0;
+}
+
+.dashboard-card__header h2,
+.card-heading h2,
+.section-heading h2 {
+  margin: 4px 0 0;
+}
+
+.dashboard-card__action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+  flex: 0 0 auto;
+}
+
+.stats,
+.premium-kpi-grid,
+.planning-analytics,
+.career-readiness-grid,
+.career-project-grid,
+.career-skill-grid {
+  gap: clamp(12px, 1.7vw, 18px) !important;
+}
+
+.grid.two,
+.premium-dashboard-grid,
+.planning-layout,
+.mentor-layout,
+.career-layout,
+.career-roadmap-grid {
+  gap: clamp(16px, 2vw, 24px) !important;
+}
+
+button,
+.home-button,
+.topbar-icon,
+.topbar-pill,
+.premium-nav-link,
+.premium-nav-trigger,
+.premium-subnav-link,
+.tabs button,
+.nav-grid button,
+.planning-view-toggle button,
+.mentor-quick-prompts button,
+.ai-assistant-suggestion {
+  min-height: var(--ui-control-height);
+  border-radius: var(--ui-radius-md) !important;
+  font-weight: 780;
+  line-height: 1.2;
+}
+
+button:not(.ai-assistant-launcher):not(.topbar-icon):not(.collapse-button) {
+  padding-inline: clamp(12px, 1.6vw, 18px);
+}
+
+button:not(:disabled):active,
+.home-button:not(:disabled):active {
+  transform: translateY(0);
+}
+
+input,
+select,
+textarea,
+.topbar-search,
+.search-input-wrapper,
+.premium-select {
+  min-height: var(--ui-control-height);
+  border-radius: var(--ui-radius-md) !important;
+  font-size: 0.94rem;
+}
+
+textarea {
+  line-height: var(--ui-line-body);
+}
+
+label {
+  gap: 7px;
+  font-size: var(--ui-small-size);
+  font-weight: 760;
+}
+
+:where(input, select, textarea, button, a, [role="button"]):focus-visible {
+  outline: 0;
+  box-shadow: var(--theme-focus) !important;
+}
+
+.table-wrap,
+.plan-table-wrapper,
+.modern-plan-list,
+.resource-table,
+.mock-results-table {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th,
+td {
+  vertical-align: middle;
+}
+
+.modern-plan-row,
+.plan-card-premium,
+.resource-card-premium,
+.quiz-option,
+.career-project,
+.mentor-insight,
+.ai-assistant-suggestion {
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.mentor-chat-panel,
+.assistant-mentor-chat,
+.chat {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.mentor-chat-log,
+.chat-log,
+.ai-assistant-body {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--theme-accent) 38%, transparent) transparent;
+}
+
+.mentor-bubble,
+.chat-bubble,
+.ai-assistant-bubble {
+  border-radius: 18px !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.mentor-message--user .mentor-bubble,
+.chat-bubble.user,
+.ai-assistant-message.is-user .ai-assistant-bubble {
+  border-bottom-right-radius: 8px !important;
+}
+
+.mentor-message--assistant .mentor-bubble,
+.chat-bubble.assistant,
+.ai-assistant-message.is-bot .ai-assistant-bubble {
+  border-bottom-left-radius: 8px !important;
+}
+
+.mentor-bubble h3,
+.markdown-message h2,
+.markdown-message h3 {
+  margin-block: 0 8px;
+  line-height: 1.3;
+}
+
+.mentor-step,
+.mentor-bullet,
+.markdown-step,
+.markdown-bullet {
+  margin: 8px 0;
+  padding: 8px 10px 8px 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--theme-accent-soft) 68%, transparent);
+}
+
+.mentor-inputbar,
+.chat-form,
+.ai-assistant-inputbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding-top: 10px;
+  background: linear-gradient(to top, var(--theme-bg-card) 82%, transparent);
+}
+
+.ai-assistant-panel {
+  border-radius: 24px !important;
+  overflow: hidden;
+}
+
+.ai-assistant-header,
+.ai-assistant-inputbar {
+  border-color: var(--theme-border) !important;
+}
+
+.ai-assistant-typing i,
+.typing-dot {
+  width: 5px;
+  height: 5px;
+  display: inline-block;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.48;
+  animation: uiTypingPulse 1.1s infinite ease-in-out;
+}
+
+.ai-assistant-typing i:nth-child(3),
+.typing-dot:nth-child(2) {
+  animation-delay: 0.14s;
+}
+
+.ai-assistant-typing i:nth-child(4),
+.typing-dot:nth-child(3) {
+  animation-delay: 0.28s;
+}
+
+@keyframes uiTypingPulse {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
+  40% { transform: translateY(-3px); opacity: 0.9; }
+}
+
+.mentor-sidebar,
+.mentor-insight-column,
+.career-sidebar,
+.career-side-stack,
+.planning-side {
+  max-height: calc(100vh - 112px);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.topbar-actions,
+.dashboard-action-row,
+.planning-controls,
+.assistant-mentor-toolbar,
+.mentor-quick-prompts,
+.career-chip-row {
+  min-width: 0;
+}
+
+.planning-controls,
+.assistant-mentor-toolbar {
+  border-radius: var(--ui-radius-xl) !important;
+}
+
+.planning-controls > *,
+.assistant-mentor-toolbar > *,
+.topbar-actions > * {
+  min-width: 0;
+}
+
+.success,
+.error,
+.planning-message,
+.empty {
+  border-radius: var(--ui-radius-md);
+}
+
+.error {
+  color: #b42318 !important;
+  background: color-mix(in srgb, var(--theme-error-soft) 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-error) 28%, transparent);
+  padding: 10px 12px;
+}
+
+.success {
+  color: #047857 !important;
+  background: color-mix(in srgb, var(--theme-success-soft) 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-success) 28%, transparent);
+  padding: 10px 12px;
+}
+
+.empty {
+  color: var(--theme-text-secondary) !important;
+  background: color-mix(in srgb, var(--theme-bg-soft) 78%, transparent);
+  border: 1px dashed var(--theme-border);
+  padding: 14px;
+}
+
+.theme-dark .panel,
+.theme-dark .dashboard-card,
+.theme-dark .planning-page .panel,
+.theme-dark .mentor-bubble,
+.theme-dark .career-phase,
+.theme-dark .career-skill,
+.theme-dark .career-project,
+[data-theme="dark"] .panel,
+[data-theme="dark"] .dashboard-card,
+[data-theme="dark"] .mentor-bubble {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 18px 44px rgba(0, 0, 0, 0.24) !important;
+}
+
+.theme-dark .empty,
+[data-theme="dark"] .empty {
+  background: rgba(148, 163, 184, 0.08);
+}
+
+@media (max-width: 1180px) {
+  .mentor-sidebar,
+  .mentor-insight-column,
+  .career-sidebar,
+  .career-side-stack,
+  .planning-side {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 920px) {
+  .app.premium-shell .dashboard-main,
+  .premium-shell .dashboard-main,
+  .main {
+    width: 100%;
+    padding-inline: clamp(14px, 4vw, 22px) !important;
+  }
+
+  .dashboard-topbar,
+  .app.premium-shell .dashboard-topbar,
+  .premium-shell .dashboard-topbar {
+    border-radius: 0 0 20px 20px !important;
+  }
+
+  .topbar-actions {
+    width: 100%;
+  }
+
+  .topbar-search {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0 !important;
+  }
+
+  .mentor-chat-panel {
+    grid-template-rows: minmax(360px, 56vh) auto auto !important;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --ui-control-height: 46px;
+    --ui-card-padding: 16px;
+  }
+
+  .panel,
+  .dashboard-card,
+  .planning-page .panel,
+  .premium-dashboard-card,
+  .premium-kpi-card,
+  .plan-card-premium,
+  .resource-card-premium,
+  .quiz-card,
+  .mock-question-card,
+  .mentor-card,
+  .career-project {
+    border-radius: 16px !important;
+  }
+
+  .dashboard-card__header,
+  .card-heading,
+  .section-heading,
+  .career-phase-head,
+  .career-review > div {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-card__action {
+    width: 100%;
+  }
+
+  .dashboard-card__action > *,
+  .dashboard-action-row button,
+  .planning-controls button,
+  .assistant-mentor-toolbar button,
+  .mentor-inputbar button,
+  .chat-form button {
+    width: 100%;
+  }
+
+  .mentor-inputbar,
+  .chat-form,
+  .ai-assistant-inputbar {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ai-assistant-panel {
+    border-radius: 0 !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .topbar-title h1,
+  .page-title h1 {
+    font-size: 1.45rem !important;
+  }
+
+  .panel,
+  .dashboard-card {
+    padding: 14px;
+  }
+
+  .mentor-bubble,
+  .chat-bubble {
+    max-width: 100%;
+  }
+
+  .career-hero-score,
+  .mentor-readiness,
+  .burnout-meter {
+    width: min(144px, 54vw) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Targeted fixes for mentor/career visual regressions */
+.mentor-workspace .mentor-chat-panel {
+  grid-template-rows: minmax(420px, 58vh) auto auto !important;
+  overflow: hidden;
+}
+
+.mentor-workspace .mentor-chat-log {
+  align-content: start;
+  padding: 8px 4px 10px 0;
+}
+
+.mentor-workspace .mentor-message {
+  align-items: start !important;
+  min-height: 0 !important;
+}
+
+.mentor-workspace .mentor-avatar {
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  padding: 0 !important;
+  align-self: start !important;
+  justify-self: start !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 999px !important;
+  line-height: 1 !important;
+}
+
+.mentor-workspace .mentor-message--user .mentor-avatar {
+  justify-self: end !important;
+}
+
+.mentor-workspace .mentor-message--user .mentor-bubble {
+  max-width: min(680px, 82%) !important;
+}
+
+.mentor-workspace .mentor-bubble {
+  min-height: 0 !important;
+  padding: 16px !important;
+}
+
+.mentor-mode-list button.is-active,
+.mentor-conversation-list button.is-active,
+.mentor-mode-list button.is-active *,
+.mentor-conversation-list button.is-active * {
+  color: #ffffff !important;
+}
+
+.mentor-conversation-list button {
+  min-height: 54px;
+}
+
+.theme-dark .career-phase,
+[data-theme="dark"] .career-phase,
+.app.premium-shell.theme-dark .career-phase {
+  background: color-mix(in srgb, var(--theme-bg-card) 92%, #ffffff 4%) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: var(--theme-text-primary) !important;
+}
+
+.theme-dark .career-phase p,
+.theme-dark .career-phase span,
+.theme-dark .career-phase h3,
+[data-theme="dark"] .career-phase p,
+[data-theme="dark"] .career-phase span,
+[data-theme="dark"] .career-phase h3 {
+  color: var(--theme-text-primary) !important;
+}
+
+.theme-dark .career-chip-row span,
+[data-theme="dark"] .career-chip-row span {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--theme-text-secondary) !important;
+}
+
+.theme-dark .career-phase-marker,
+[data-theme="dark"] .career-phase-marker {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: var(--theme-success) !important;
+}
+
+.theme-dark .career-side-stack .panel,
+[data-theme="dark"] .career-side-stack .panel {
+  background: color-mix(in srgb, var(--theme-bg-card) 94%, #ffffff 2%) !important;
+}
+
+.theme-dark .career-gap b,
+[data-theme="dark"] .career-gap b {
+  color: #34d399 !important;
+}
+
+@media (max-width: 920px) {
+  .mentor-workspace .mentor-chat-panel {
+    grid-template-rows: minmax(360px, 54vh) auto auto !important;
+  }
+
+  .mentor-workspace .mentor-message--user .mentor-bubble {
+    max-width: min(100%, 620px) !important;
+  }
+}
+
+/* Mentor Room chat layout stability */
+.mentor-workspace .mentor-layout {
+  grid-template-columns: minmax(240px, 315px) minmax(420px, 1fr) minmax(280px, 370px) !important;
+  align-items: start;
+}
+
+.mentor-workspace .mentor-chat-panel {
+  position: relative;
+  z-index: 1;
+  display: grid !important;
+  grid-template-rows: minmax(0, 1fr) auto auto !important;
+  gap: 14px !important;
+  height: clamp(580px, calc(100vh - 250px), 760px);
+  min-height: 0 !important;
+  max-height: none;
+  padding: clamp(18px, 2vw, 26px) !important;
+  overflow: hidden !important;
+}
+
+.mentor-workspace .mentor-chat-log {
+  display: flex !important;
+  flex-direction: column !important;
+  align-content: stretch !important;
+  gap: 18px !important;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 4px 8px 12px 0 !important;
+  overscroll-behavior: contain;
+}
+
+.mentor-workspace .mentor-message {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  width: 100%;
+  min-width: 0;
+  min-height: 0 !important;
+  position: relative;
+  z-index: 0;
+}
+
+.mentor-workspace .mentor-message--user {
+  flex-direction: row-reverse !important;
+  justify-content: flex-start !important;
+}
+
+.mentor-workspace .mentor-message--assistant {
+  justify-content: flex-start !important;
+}
+
+.mentor-workspace .mentor-avatar {
+  flex: 0 0 38px !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  margin: 2px 0 0 !important;
+  transform: none !important;
+}
+
+.mentor-workspace .mentor-bubble {
+  position: relative;
+  display: block !important;
+  width: fit-content;
+  min-width: 0;
+  max-width: min(760px, calc(100% - 56px)) !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 16px 18px !important;
+  overflow: visible !important;
+  border-radius: 20px !important;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 84%, var(--theme-accent) 16%) !important;
+  background: color-mix(in srgb, var(--theme-bg-card) 88%, var(--theme-accent-soft) 12%) !important;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07) !important;
+}
+
+.mentor-workspace .mentor-message--user .mentor-bubble {
+  margin-left: auto;
+  color: #ffffff !important;
+  background: #227858 !important;
+  border-color: #227858 !important;
+  box-shadow: 0 14px 34px rgba(34, 120, 88, 0.22) !important;
+}
+
+.mentor-workspace .mentor-message--assistant .mentor-bubble {
+  margin-right: auto;
+}
+
+.mentor-workspace .mentor-bubble-content {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mentor-workspace .mentor-bubble p,
+.mentor-workspace .mentor-bubble strong,
+.mentor-workspace .mentor-bubble h3,
+.mentor-workspace .mentor-bubble span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.mentor-workspace .mentor-bubble p {
+  margin: 0 !important;
+  color: var(--theme-text-secondary) !important;
+  line-height: 1.68 !important;
+}
+
+.mentor-workspace .mentor-bubble strong {
+  color: var(--theme-text-primary) !important;
+  font-weight: 850;
+}
+
+.mentor-workspace .mentor-bubble h3 {
+  margin: 0 !important;
+  color: var(--theme-text-primary) !important;
+  font-size: clamp(1rem, 1.3vw, 1.22rem) !important;
+  line-height: 1.3 !important;
+}
+
+.mentor-workspace .mentor-message--user .mentor-bubble p,
+.mentor-workspace .mentor-message--user .mentor-bubble strong,
+.mentor-workspace .mentor-message--user .mentor-bubble h3 {
+  color: #ffffff !important;
+}
+
+.mentor-workspace .mentor-step,
+.mentor-workspace .mentor-bullet {
+  margin: 0 !important;
+  padding: 10px 12px !important;
+  border-left: 3px solid #227858 !important;
+  border-radius: 13px !important;
+  background: color-mix(in srgb, var(--theme-bg-soft) 80%, var(--theme-accent-soft) 20%) !important;
+}
+
+.mentor-workspace .mentor-message--user .mentor-step,
+.mentor-workspace .mentor-message--user .mentor-bullet {
+  border-left-color: rgba(255, 255, 255, 0.62) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.mentor-workspace .mentor-quick-prompts {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  padding-top: 2px;
+}
+
+.mentor-workspace .mentor-quick-prompts button {
+  flex: 0 1 auto;
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
+  min-height: 44px;
+}
+
+.mentor-workspace .mentor-inputbar {
+  position: relative !important;
+  bottom: auto !important;
+  z-index: 3;
+  display: grid !important;
+  grid-template-columns: 64px minmax(0, 1fr) minmax(112px, auto) !important;
+  gap: 10px !important;
+  padding-top: 0 !important;
+  background: transparent !important;
+}
+
+.mentor-workspace .mentor-inputbar input {
+  min-width: 0;
+}
+
+.mentor-workspace .mentor-insight-column {
+  z-index: 0;
+}
+
+.theme-dark .mentor-workspace .mentor-bubble,
+[data-theme="dark"] .mentor-workspace .mentor-bubble {
+  background: color-mix(in srgb, var(--theme-bg-card) 88%, #ffffff 5%) !important;
+  border-color: rgba(255, 255, 255, 0.11) !important;
+}
+
+.theme-dark .mentor-workspace .mentor-step,
+.theme-dark .mentor-workspace .mentor-bullet,
+[data-theme="dark"] .mentor-workspace .mentor-step,
+[data-theme="dark"] .mentor-workspace .mentor-bullet {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+@media (max-width: 1280px) {
+  .mentor-workspace .mentor-layout {
+    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr) !important;
+  }
+
+  .mentor-workspace .mentor-insight-column {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 960px) {
+  .mentor-workspace .mentor-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mentor-workspace .mentor-chat-panel {
+    height: auto;
+    min-height: 620px !important;
+  }
+
+  .mentor-workspace .mentor-chat-log {
+    max-height: 56vh;
+  }
+
+  .mentor-workspace .mentor-insight-column {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .mentor-workspace .mentor-chat-panel {
+    min-height: 560px !important;
+    padding: 16px !important;
+  }
+
+  .mentor-workspace .mentor-message,
+  .mentor-workspace .mentor-message--user {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .mentor-workspace .mentor-message--user .mentor-avatar {
+    align-self: flex-end !important;
+  }
+
+  .mentor-workspace .mentor-bubble,
+  .mentor-workspace .mentor-message--user .mentor-bubble {
+    width: 100%;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .mentor-workspace .mentor-inputbar {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mentor-workspace .mentor-inputbar button {
+    width: 100%;
+  }
+}
+
+/* Mentor chat overlap hardening */
+.mentor-workspace .mentor-chat-log {
+  display: block !important;
+  position: relative;
+  isolation: isolate;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  contain: layout paint;
+  padding: 10px 10px 18px !important;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--theme-bg-soft) 42%, transparent);
+}
+
+.mentor-workspace .mentor-message {
+  display: flow-root !important;
+  clear: both;
+  width: 100%;
+  margin: 0 0 18px !important;
+  padding: 0 !important;
+  position: relative;
+  isolation: isolate;
+  transform: none !important;
+}
+
+.mentor-workspace .mentor-message:last-child {
+  margin-bottom: 0 !important;
+}
+
+.mentor-workspace .mentor-message .mentor-avatar {
+  position: relative;
+  z-index: 2;
+}
+
+.mentor-workspace .mentor-message--assistant .mentor-avatar {
+  float: left;
+  margin: 2px 12px 8px 0 !important;
+}
+
+.mentor-workspace .mentor-message--user .mentor-avatar {
+  float: right;
+  margin: 2px 0 8px 12px !important;
+}
+
+.mentor-workspace .mentor-message--assistant .mentor-bubble {
+  float: left;
+  clear: none;
+  margin: 0 !important;
+}
+
+.mentor-workspace .mentor-message--user .mentor-bubble {
+  float: right;
+  clear: none;
+  margin: 0 !important;
+}
+
+.mentor-workspace .mentor-bubble {
+  box-sizing: border-box;
+  max-width: min(720px, calc(100% - 58px)) !important;
+  contain: layout paint;
+}
+
+.mentor-workspace .mentor-bubble-content {
+  display: flex !important;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mentor-workspace .mentor-bubble-content > * {
+  flex: 0 0 auto;
+}
+
+.mentor-workspace .mentor-bubble br {
+  display: none;
+}
+
+.mentor-workspace .mentor-quick-prompts {
+  position: relative;
+  z-index: 3;
+  margin-top: 0;
+}
+
+.mentor-workspace .mentor-inputbar {
+  position: relative !important;
+  z-index: 4;
+}
+
+@media (max-width: 680px) {
+  .mentor-workspace .mentor-chat-log {
+    padding: 8px !important;
+  }
+
+  .mentor-workspace .mentor-message .mentor-avatar {
+    float: none;
+    margin: 0 0 8px !important;
+  }
+
+  .mentor-workspace .mentor-message--user .mentor-avatar {
+    margin-left: auto !important;
+  }
+
+  .mentor-workspace .mentor-message--assistant .mentor-bubble,
+  .mentor-workspace .mentor-message--user .mentor-bubble {
+    float: none;
+  }
+}
+
+/* Premium AI Mock Interview page */
+.ai-mock-page {
+  --mock-bg: #07111f;
+  --mock-card: rgba(15, 27, 46, 0.78);
+  --mock-card-strong: rgba(18, 33, 56, 0.92);
+  --mock-border: rgba(148, 163, 184, 0.18);
+  --mock-border-strong: rgba(52, 211, 153, 0.38);
+  --mock-text: #f8fafc;
+  --mock-muted: #9fb0c6;
+  --mock-soft: rgba(148, 163, 184, 0.1);
+  --mock-accent: #34d399;
+  --mock-accent-strong: #10b981;
+  --mock-blue: #60a5fa;
+  min-height: calc(100vh - 170px);
+  padding: clamp(18px, 2.5vw, 34px);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 30px;
+  color: var(--mock-text);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(52, 211, 153, 0.16), transparent 30%),
+    radial-gradient(circle at 88% 0%, rgba(96, 165, 250, 0.16), transparent 32%),
+    linear-gradient(145deg, #07111f 0%, #0b1426 45%, #07101d 100%);
+  box-shadow: 0 28px 90px rgba(2, 8, 23, 0.38);
+  overflow: hidden;
+}
+
+.ai-mock-page * {
+  box-sizing: border-box;
+}
+
+.ai-mock-hero,
+.ai-mock-mode-layout,
+.ai-mock-question-card,
+.ai-mock-answer-panel,
+.ai-mock-feature-card {
+  border: 1px solid var(--mock-border);
+  background: linear-gradient(145deg, rgba(15, 27, 46, 0.82), rgba(15, 23, 42, 0.54));
+  box-shadow: 0 20px 60px rgba(2, 8, 23, 0.28);
+  backdrop-filter: blur(18px);
+}
+
+.ai-mock-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  padding: clamp(24px, 4vw, 44px);
+  border-radius: 28px;
+}
+
+.ai-mock-hero__identity {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.ai-mock-logo,
+.ai-mock-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  color: #062014;
+  background: linear-gradient(135deg, #6ee7b7, #22c55e);
+  box-shadow: 0 16px 34px rgba(16, 185, 129, 0.25);
+}
+
+.ai-mock-logo {
+  width: 62px;
+  height: 62px;
+  border-radius: 22px;
+}
+
+.ai-mock-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mock-accent);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.ai-mock-hero h2 {
+  margin: 8px 0 10px;
+  color: var(--mock-text) !important;
+  font-size: clamp(2.35rem, 5vw, 4.8rem);
+  line-height: 0.96;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.ai-mock-hero p,
+.ai-mock-tip-card p,
+.ai-mock-answer-head p,
+.ai-mock-feature-card p,
+.ai-mock-evaluation p,
+.ai-mock-question-body p {
+  margin: 0;
+  color: var(--mock-muted) !important;
+  line-height: 1.65;
+}
+
+.ai-mock-mode-badge {
+  min-height: 48px;
+  border: 1px solid rgba(52, 211, 153, 0.32) !important;
+  border-radius: 999px !important;
+  color: #d1fae5 !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 38px rgba(16, 185, 129, 0.12) !important;
+}
+
+.ai-mock-mode-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  gap: 18px;
+  padding: 18px;
+  border-radius: 26px;
+}
+
+.ai-mock-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ai-mock-mode-card {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 8px;
+  min-height: 118px;
+  padding: 16px !important;
+  border: 1px solid var(--mock-border) !important;
+  border-radius: 20px !important;
+  color: var(--mock-text) !important;
+  background: rgba(15, 23, 42, 0.55) !important;
+  box-shadow: none !important;
+  text-align: left;
+}
+
+.ai-mock-mode-card svg {
+  color: var(--mock-blue);
+}
+
+.ai-mock-mode-card span {
+  font-weight: 850;
+}
+
+.ai-mock-mode-card small {
+  color: var(--mock-muted);
+  line-height: 1.45;
+}
+
+.ai-mock-mode-card:hover,
+.ai-mock-mode-card.is-active {
+  transform: translateY(-2px);
+  border-color: var(--mock-border-strong) !important;
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.18), rgba(15, 23, 42, 0.68)) !important;
+}
+
+.ai-mock-mode-card.is-active svg {
+  color: var(--mock-accent);
+}
+
+.ai-mock-tip-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 18px;
+  border: 1px solid rgba(96, 165, 250, 0.24);
+  border-radius: 20px;
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.ai-mock-tip-card svg {
+  flex: 0 0 auto;
+  color: var(--mock-blue);
+}
+
+.ai-mock-tip-card strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--mock-text);
+}
+
+.ai-mock-question-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding: clamp(20px, 3vw, 30px);
+  border-radius: 26px;
+}
+
+.ai-mock-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 18px;
+}
+
+.ai-mock-question-body {
+  min-width: 0;
+}
+
+.ai-mock-question-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.ai-mock-question-meta strong {
+  color: var(--mock-text);
+}
+
+.ai-mock-question-meta span,
+.ai-mock-counter {
+  color: var(--mock-muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.ai-mock-question-body p {
+  max-width: 980px;
+  color: var(--mock-text) !important;
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  line-height: 1.5;
+}
+
+.ai-mock-answer-panel {
+  display: grid;
+  gap: 16px;
+  padding: clamp(20px, 3vw, 30px);
+  border-radius: 26px;
+}
+
+.ai-mock-answer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.ai-mock-answer-head h3 {
+  margin: 6px 0 6px;
+  color: var(--mock-text) !important;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+}
+
+.ai-mock-answer-panel textarea {
+  min-height: 260px;
+  padding: 18px;
+  border: 1px solid var(--mock-border) !important;
+  border-radius: 22px !important;
+  color: var(--mock-text) !important;
+  background: rgba(2, 8, 23, 0.42) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.ai-mock-answer-panel textarea:focus {
+  border-color: rgba(52, 211, 153, 0.52) !important;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.ai-mock-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ai-mock-secondary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ai-mock-secondary-actions button {
+  border: 1px solid var(--mock-border) !important;
+  color: var(--mock-text) !important;
+  background: rgba(15, 23, 42, 0.66) !important;
+  box-shadow: none !important;
+}
+
+.ai-mock-secondary-actions button:hover {
+  border-color: rgba(96, 165, 250, 0.4) !important;
+  color: #bfdbfe !important;
+}
+
+.ai-mock-cta {
+  min-height: 52px;
+  padding-inline: 24px !important;
+  border-radius: 18px !important;
+  color: #04130d !important;
+  background: linear-gradient(135deg, #6ee7b7, #10b981) !important;
+  box-shadow: 0 18px 42px rgba(16, 185, 129, 0.26) !important;
+}
+
+.ai-mock-cta:hover {
+  box-shadow: 0 22px 48px rgba(16, 185, 129, 0.34) !important;
+}
+
+.ai-mock-notice,
+.ai-mock-evaluation {
+  border-radius: 18px;
+  padding: 14px 16px;
+}
+
+.ai-mock-notice {
+  margin: 0;
+  color: #bfdbfe !important;
+  background: rgba(37, 99, 235, 0.14);
+  border: 1px solid rgba(96, 165, 250, 0.2);
+}
+
+.ai-mock-evaluation {
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(52, 211, 153, 0.22);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.ai-mock-evaluation span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #bbf7d0;
+  font-weight: 900;
+}
+
+.ai-mock-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.ai-mock-feature-card {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  min-height: 170px;
+  padding: 20px;
+  border-radius: 24px;
+}
+
+.ai-mock-feature-card svg {
+  color: var(--mock-accent);
+}
+
+.ai-mock-feature-card h3 {
+  margin: 0;
+  color: var(--mock-text) !important;
+  font-size: 1.05rem;
+}
+
+@media (max-width: 1180px) {
+  .ai-mock-mode-layout,
+  .ai-mock-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-mock-mode-badge {
+    justify-self: start;
+  }
+
+  .ai-mock-mode-grid,
+  .ai-mock-feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .ai-mock-page {
+    padding: 14px;
+    border-radius: 20px;
+  }
+
+  .ai-mock-hero__identity,
+  .ai-mock-question-card {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .ai-mock-mode-grid,
+  .ai-mock-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-mock-answer-head,
+  .ai-mock-actions,
+  .ai-mock-secondary-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .ai-mock-actions button,
+  .ai-mock-mode-badge {
+    width: 100%;
+  }
+
+  .ai-mock-answer-panel textarea {
+    min-height: 220px;
+  }
+}

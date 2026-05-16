@@ -14,6 +14,12 @@ from .models import (
     AIRecommendation,
     AIMemory,
     BurnoutSnapshot,
+    CareerInterviewSession,
+    CareerLearningInsight,
+    CareerProjectRecommendation,
+    CareerReadinessSnapshot,
+    CareerRoadmap,
+    CareerRoadmapPhase,
     FocusSession,
     MentorConversation,
     MentorMessage,
@@ -27,6 +33,7 @@ from .models import (
     StudyPlan,
     StudySession,
     Subject,
+    SkillProfile,
     WeakTopic,
 )
 
@@ -1699,3 +1706,297 @@ def topic_quiz_templates(subject_name, focus, difficulty):
     elif difficulty in {"low", "easy"}:
         base[0]["question"] = f"Foundation: {base[0]['question']}"
     return base
+
+
+CAREER_BLUEPRINTS = {
+    "frontend": {
+        "skills": ["HTML", "CSS", "JavaScript", "React", "Accessibility", "State Management", "Testing", "Performance"],
+        "projects": ["Responsive portfolio", "Component library", "Analytics dashboard", "Progressive web app"],
+    },
+    "full stack": {
+        "skills": ["JavaScript", "React", "REST APIs", "PostgreSQL", "Authentication", "Caching", "Testing", "Deployment"],
+        "projects": ["Task management SaaS", "E-commerce platform", "Realtime chat app", "AI study planner"],
+    },
+    "data": {
+        "skills": ["Python", "Statistics", "SQL", "Pandas", "Machine Learning", "Visualization", "Model Evaluation", "Data Storytelling"],
+        "projects": ["EDA report", "Prediction model", "Recommendation engine", "BI dashboard"],
+    },
+    "ai": {
+        "skills": ["Python", "Prompt Engineering", "Embeddings", "RAG", "Evaluation", "Agents", "APIs", "Deployment"],
+        "projects": ["AI notes assistant", "RAG knowledge base", "Quiz generator", "Career mentor system"],
+    },
+    "devops": {
+        "skills": ["Linux", "Docker", "CI/CD", "Cloud", "Monitoring", "Networking", "Security", "Infrastructure as Code"],
+        "projects": ["Dockerized API", "CI/CD pipeline", "Cloud deployment", "Monitoring dashboard"],
+    },
+    "design": {
+        "skills": ["User Research", "Wireframing", "Design Systems", "Figma", "Accessibility", "Prototyping", "Usability Testing", "Portfolio Storytelling"],
+        "projects": ["Mobile app redesign", "SaaS dashboard system", "Design system", "UX case study"],
+    },
+}
+
+
+def career_blueprint_for(target_career):
+    career = (target_career or "").lower()
+    if "full" in career:
+        return CAREER_BLUEPRINTS["full stack"]
+    if "data" in career:
+        return CAREER_BLUEPRINTS["data"]
+    if "ai" in career or "machine" in career:
+        return CAREER_BLUEPRINTS["ai"]
+    if "devops" in career or "cloud" in career:
+        return CAREER_BLUEPRINTS["devops"]
+    if "design" in career or "ux" in career:
+        return CAREER_BLUEPRINTS["design"]
+    return CAREER_BLUEPRINTS["frontend"]
+
+
+def split_technologies(value):
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    return [item.strip() for item in str(value or "").split(",") if item.strip()]
+
+
+def build_career_prompt(target_career, skill_level, weekly_hours, timeline_weeks, preferred_technologies):
+    return (
+        "Act as a personal AI career mentor. Create a concise, practical career roadmap summary.\n"
+        f"Target career: {target_career}\n"
+        f"Current skill level: {skill_level}\n"
+        f"Weekly learning hours: {weekly_hours}\n"
+        f"Timeline weeks: {timeline_weeks}\n"
+        f"Preferred technologies: {format_topic_list(preferred_technologies, 'not specified')}\n"
+        "Focus on skill gaps, portfolio proof, interview readiness, and adaptive learning strategy."
+    )
+
+
+def generate_career_roadmap(user, payload):
+    target_career = (payload.get("target_career") or "Frontend Developer").strip()
+    skill_level = payload.get("skill_level") or "beginner"
+    weekly_hours = max(3, min(int(payload.get("weekly_hours") or payload.get("available_study_hours") or 8), 40))
+    timeline_weeks = max(4, min(int(payload.get("timeline_weeks") or payload.get("target_timeline") or 12), 52))
+    preferred_technologies = split_technologies(payload.get("preferred_technologies"))
+    blueprint = career_blueprint_for(target_career)
+    skills = list(dict.fromkeys([*preferred_technologies, *blueprint["skills"]]))
+    ai_summary = call_external_ai(build_career_prompt(target_career, skill_level, weekly_hours, timeline_weeks, preferred_technologies))
+
+    roadmap = CareerRoadmap.objects.create(
+        user=user,
+        target_career=target_career,
+        skill_level=skill_level,
+        weekly_hours=weekly_hours,
+        timeline_weeks=timeline_weeks,
+        preferred_technologies=preferred_technologies,
+        summary=ai_summary or f"{target_career} roadmap built for a {skill_level} learner with {weekly_hours} focused hours per week.",
+        revision_strategy="Use weekly active-recall reviews, one project journal, and revisit weak technologies after 3, 7, and 14 days.",
+        interview_path="Start with fundamentals, move into project walkthroughs, then practice timed technical and behavioral rounds.",
+        adaptive_notes=[
+            "Increase project work when quiz scores stay above 80%.",
+            "Repeat prerequisite topics when confidence drops below 55%.",
+            "Protect at least one review block each week.",
+        ],
+    )
+
+    phase_plan = [
+        ("beginner", "Foundation Phase", skills[:4], 0.22),
+        ("intermediate", "Applied Skills Phase", skills[3:7], 0.24),
+        ("advanced", "Advanced Systems Phase", skills[5:9], 0.20),
+        ("projects", "Project-Building Phase", skills[1:8], 0.22),
+        ("interview", "Interview Preparation Phase", skills[2:9], 0.12),
+    ]
+    for order, (phase_type, title, topics, share) in enumerate(phase_plan, start=1):
+        phase_topics = topics or skills[:3]
+        CareerRoadmapPhase.objects.create(
+            roadmap=roadmap,
+            phase_type=phase_type,
+            title=title,
+            order=order,
+            estimated_weeks=max(1, round(timeline_weeks * share)),
+            topics=phase_topics,
+            learning_goals=[
+                f"Build usable confidence in {format_topic_list(phase_topics[:2])}.",
+                "Create notes that can be reused for revision and interviews.",
+                "Prove the phase with a small deliverable, not passive watching.",
+            ],
+            recommended_projects=blueprint["projects"][max(0, order - 2): order + 1] or blueprint["projects"][:2],
+        )
+
+    for index, skill in enumerate(skills[:10]):
+        base = {"beginner": 25, "intermediate": 45, "advanced": 62}.get(skill_level, 30)
+        confidence = clamp(base + (8 if skill in preferred_technologies else 0) - index * 2)
+        SkillProfile.objects.create(
+            user=user,
+            roadmap=roadmap,
+            name=skill,
+            category="technology" if index < 7 else "career",
+            current_level=confidence,
+            target_level=85,
+            confidence=confidence,
+            evidence=["Roadmap self-assessment", "Study history", "Preferred technology match" if skill in preferred_technologies else "Required role skill"],
+        )
+
+    generate_career_projects(user, roadmap)
+    generate_career_readiness(user, roadmap)
+    generate_career_insights(user, roadmap)
+    return roadmap
+
+
+def career_skill_gap(user, roadmap=None):
+    roadmap = roadmap or CareerRoadmap.objects.filter(user=user).first()
+    if not roadmap:
+        return []
+    completed_topics = WeakTopic.objects.filter(user=user, is_completed=True).count()
+    quiz_average = ProgressLog.objects.filter(user=user).exclude(quiz_score=None).aggregate(avg=Avg("quiz_score")).get("avg") or 0
+    gaps = []
+    for skill in roadmap.skills.all():
+        gap = max(0, skill.target_level - skill.current_level)
+        if gap < 15:
+            continue
+        reasons = []
+        if quiz_average and quiz_average < 70:
+            reasons.append("recent quiz accuracy is below interview-ready level")
+        if completed_topics < 5:
+            reasons.append("limited completed learning evidence")
+        if skill.confidence < 60:
+            reasons.append("low confidence signal")
+        gaps.append({
+            "skill": skill.name,
+            "category": skill.category,
+            "gap": gap,
+            "priority": "high" if gap >= 45 else "medium",
+            "recommendation": f"Practice {skill.name} through one focused mini-project and one interview drill.",
+            "reasons": reasons or ["target role requires stronger proof"],
+        })
+    return sorted(gaps, key=lambda item: item["gap"], reverse=True)[:8]
+
+
+def generate_career_projects(user, roadmap):
+    blueprint = career_blueprint_for(roadmap.target_career)
+    gaps = [item["skill"] for item in career_skill_gap(user, roadmap)[:4]]
+    technologies = roadmap.preferred_technologies or blueprint["skills"][:4]
+    created = []
+    for index, title in enumerate(blueprint["projects"][:4], start=1):
+        created.append(CareerProjectRecommendation.objects.create(
+            user=user,
+            roadmap=roadmap,
+            title=title,
+            difficulty=["easy", "medium", "medium", "hard"][min(index - 1, 3)],
+            estimated_weeks=max(1, round(roadmap.timeline_weeks / 8) + index - 1),
+            required_technologies=list(dict.fromkeys([*technologies[:4], *gaps[:2]]))[:6],
+            architecture_suggestions=[
+                "Define core user flows before coding.",
+                "Use a small API/data layer instead of hardcoded screens.",
+                "Add one measurable analytics or testing feature.",
+            ],
+            reason=f"Strengthens {format_topic_list((gaps or technologies)[:3])} for {roadmap.target_career}.",
+        ))
+    return created
+
+
+def generate_career_readiness(user, roadmap=None):
+    roadmap = roadmap or CareerRoadmap.objects.filter(user=user).first()
+    if not roadmap:
+        return None
+    skills = list(roadmap.skills.all())
+    avg_skill = sum(skill.current_level for skill in skills) / len(skills) if skills else 0
+    completed_projects = roadmap.project_recommendations.filter(status="completed").count()
+    project_count = roadmap.project_recommendations.count()
+    portfolio = clamp((completed_projects / max(project_count, 1)) * 70 + min(project_count, 4) * 7)
+    quiz_avg = ProgressLog.objects.filter(user=user).exclude(quiz_score=None).aggregate(avg=Avg("quiz_score")).get("avg") or avg_skill
+    interview_sessions = roadmap.interview_sessions.count()
+    interview_avg = roadmap.interview_sessions.aggregate(avg=Avg("score")).get("avg") or 0
+    interview = clamp((quiz_avg * 0.55) + (interview_avg * 0.35) + min(interview_sessions * 5, 10))
+    snapshot = CareerReadinessSnapshot.objects.create(
+        user=user,
+        roadmap=roadmap,
+        career_readiness=clamp(avg_skill * 0.45 + portfolio * 0.30 + interview * 0.25),
+        interview_readiness=interview,
+        portfolio_strength=portfolio,
+        technical_confidence=clamp(avg_skill),
+        missing_requirements=[gap["skill"] for gap in career_skill_gap(user, roadmap)[:5]],
+        improvement_trends=[
+            "Portfolio score rises fastest when recommended projects are completed.",
+            "Interview readiness improves through answer evaluation and weak-concept retries.",
+            "Technical confidence is tied to skill mastery evidence, not time spent alone.",
+        ],
+    )
+    return snapshot
+
+
+def generate_career_insights(user, roadmap=None):
+    roadmap = roadmap or CareerRoadmap.objects.filter(user=user).first()
+    if not roadmap:
+        return []
+    gaps = career_skill_gap(user, roadmap)
+    insights = []
+    if gaps:
+        top = gaps[0]
+        insights.append(CareerLearningInsight.objects.create(
+            user=user,
+            roadmap=roadmap,
+            title=f"{top['skill']} is your highest leverage gap",
+            detail=f"Your {top['skill']} gap is {top['gap']} points. Pair a focused lesson with a small project proof this week.",
+            severity="warning",
+        ))
+    insights.append(CareerLearningInsight.objects.create(
+        user=user,
+        roadmap=roadmap,
+        title="Project evidence drives readiness",
+        detail=f"{roadmap.target_career} readiness will improve fastest when you complete portfolio projects tied to weak skills.",
+        severity="info",
+    ))
+    insights.append(CareerLearningInsight.objects.create(
+        user=user,
+        roadmap=roadmap,
+        title="Learning path adjustment",
+        detail="Keep fundamentals short and increase project time when weekly consistency and quiz scores stay stable.",
+        severity="info",
+    ))
+    return insights
+
+
+def career_dashboard_payload(user):
+    roadmap = (
+        CareerRoadmap.objects.filter(user=user)
+        .prefetch_related("phases", "skills", "project_recommendations", "readiness_snapshots", "learning_insights", "interview_sessions")
+        .first()
+    )
+    if not roadmap:
+        return {"roadmap": None, "readiness": None, "skill_gaps": [], "projects": [], "insights": [], "interview_history": []}
+    latest_readiness = roadmap.readiness_snapshots.first() or generate_career_readiness(user, roadmap)
+    if roadmap.learning_insights.count() < 2:
+        generate_career_insights(user, roadmap)
+    return {
+        "roadmap": roadmap,
+        "readiness": latest_readiness,
+        "skill_gaps": career_skill_gap(user, roadmap),
+        "projects": roadmap.project_recommendations.all(),
+        "insights": roadmap.learning_insights.all()[:6],
+        "interview_history": roadmap.interview_sessions.all()[:6],
+    }
+
+
+def evaluate_career_interview(user, payload):
+    roadmap = CareerRoadmap.objects.filter(user=user, id=payload.get("roadmap")).first() or CareerRoadmap.objects.filter(user=user).first()
+    if not roadmap:
+        raise ValueError("Create a career roadmap before starting interview preparation.")
+    question = (payload.get("question") or f"Explain how your projects prove readiness for {roadmap.target_career}.").strip()
+    answer = (payload.get("answer") or "").strip()
+    answer_words = len(answer.split())
+    weak_skills = [skill.name for skill in roadmap.skills.order_by("current_level")[:3]]
+    score = clamp(35 + min(answer_words, 90) * 0.45 + (15 if any(skill.lower() in answer.lower() for skill in weak_skills) else 0))
+    weak_concepts = [skill for skill in weak_skills if skill.lower() not in answer.lower()][:3]
+    session = CareerInterviewSession.objects.create(
+        user=user,
+        roadmap=roadmap,
+        interview_type=payload.get("interview_type") or "technical",
+        question=question,
+        answer=answer,
+        evaluation=(
+            f"Score: {score}%. Your answer is {'clear' if score >= 70 else 'promising but incomplete'}. "
+            "Improve it by naming the problem, explaining trade-offs, and tying the result to measurable impact."
+        ),
+        score=score,
+        weak_concepts=weak_concepts,
+    )
+    generate_career_readiness(user, roadmap)
+    return session

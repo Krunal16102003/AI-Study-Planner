@@ -297,6 +297,160 @@ class MentorRecommendation(models.Model):
         ]
 
 
+class CareerRoadmap(models.Model):
+    LEVEL_CHOICES = [
+        ("beginner", "Beginner"),
+        ("intermediate", "Intermediate"),
+        ("advanced", "Advanced"),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    target_career = models.CharField(max_length=140)
+    skill_level = models.CharField(max_length=24, choices=LEVEL_CHOICES, default="beginner")
+    weekly_hours = models.PositiveSmallIntegerField(default=8)
+    timeline_weeks = models.PositiveSmallIntegerField(default=12)
+    preferred_technologies = models.JSONField(default=list, blank=True)
+    summary = models.TextField(blank=True)
+    revision_strategy = models.TextField(blank=True)
+    interview_path = models.TextField(blank=True)
+    adaptive_notes = models.JSONField(default=list, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-updated_at"]
+        indexes = [
+            models.Index(fields=["user", "-updated_at"]),
+            models.Index(fields=["user", "target_career"]),
+        ]
+
+    def __str__(self):
+        return f"{self.target_career} roadmap"
+
+
+class CareerRoadmapPhase(models.Model):
+    PHASE_CHOICES = [
+        ("beginner", "Beginner"),
+        ("intermediate", "Intermediate"),
+        ("advanced", "Advanced"),
+        ("projects", "Project Building"),
+        ("interview", "Interview Preparation"),
+    ]
+
+    roadmap = models.ForeignKey(CareerRoadmap, related_name="phases", on_delete=models.CASCADE)
+    phase_type = models.CharField(max_length=24, choices=PHASE_CHOICES)
+    title = models.CharField(max_length=160)
+    order = models.PositiveSmallIntegerField(default=1)
+    estimated_weeks = models.PositiveSmallIntegerField(default=2)
+    topics = models.JSONField(default=list, blank=True)
+    learning_goals = models.JSONField(default=list, blank=True)
+    recommended_projects = models.JSONField(default=list, blank=True)
+    progress_percent = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order"]
+        indexes = [
+            models.Index(fields=["roadmap", "order"]),
+        ]
+
+
+class SkillProfile(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    roadmap = models.ForeignKey(CareerRoadmap, null=True, blank=True, related_name="skills", on_delete=models.CASCADE)
+    name = models.CharField(max_length=120)
+    category = models.CharField(max_length=80, default="technical")
+    current_level = models.PositiveSmallIntegerField(default=30)
+    target_level = models.PositiveSmallIntegerField(default=80)
+    confidence = models.PositiveSmallIntegerField(default=50)
+    evidence = models.JSONField(default=list, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["category", "name"]
+        unique_together = ("user", "roadmap", "name")
+        indexes = [
+            models.Index(fields=["user", "category"]),
+        ]
+
+
+class CareerProjectRecommendation(models.Model):
+    STATUS_CHOICES = [
+        ("recommended", "Recommended"),
+        ("in_progress", "In Progress"),
+        ("completed", "Completed"),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    roadmap = models.ForeignKey(CareerRoadmap, null=True, blank=True, related_name="project_recommendations", on_delete=models.CASCADE)
+    title = models.CharField(max_length=160)
+    difficulty = models.CharField(max_length=24, default="medium")
+    estimated_weeks = models.PositiveSmallIntegerField(default=2)
+    required_technologies = models.JSONField(default=list, blank=True)
+    architecture_suggestions = models.JSONField(default=list, blank=True)
+    reason = models.TextField(blank=True)
+    status = models.CharField(max_length=24, choices=STATUS_CHOICES, default="recommended")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["status", "difficulty", "title"]
+        indexes = [
+            models.Index(fields=["user", "status"]),
+        ]
+
+
+class CareerReadinessSnapshot(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    roadmap = models.ForeignKey(CareerRoadmap, null=True, blank=True, related_name="readiness_snapshots", on_delete=models.CASCADE)
+    career_readiness = models.PositiveSmallIntegerField(default=0)
+    interview_readiness = models.PositiveSmallIntegerField(default=0)
+    portfolio_strength = models.PositiveSmallIntegerField(default=0)
+    technical_confidence = models.PositiveSmallIntegerField(default=0)
+    missing_requirements = models.JSONField(default=list, blank=True)
+    improvement_trends = models.JSONField(default=list, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["user", "-created_at"]),
+        ]
+
+
+class CareerLearningInsight(models.Model):
+    SEVERITY_CHOICES = [("info", "Info"), ("warning", "Warning"), ("success", "Success")]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    roadmap = models.ForeignKey(CareerRoadmap, null=True, blank=True, related_name="learning_insights", on_delete=models.CASCADE)
+    title = models.CharField(max_length=160)
+    detail = models.TextField()
+    severity = models.CharField(max_length=20, choices=SEVERITY_CHOICES, default="info")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["user", "-created_at"]),
+        ]
+
+
+class CareerInterviewSession(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    roadmap = models.ForeignKey(CareerRoadmap, null=True, blank=True, related_name="interview_sessions", on_delete=models.CASCADE)
+    interview_type = models.CharField(max_length=40, default="technical")
+    question = models.TextField()
+    answer = models.TextField(blank=True)
+    evaluation = models.TextField(blank=True)
+    score = models.PositiveSmallIntegerField(default=0)
+    weak_concepts = models.JSONField(default=list, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["user", "-created_at"]),
+        ]
+
+
 class Notification(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=140)

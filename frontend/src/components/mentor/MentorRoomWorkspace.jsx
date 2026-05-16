@@ -235,7 +235,11 @@ export default function MentorRoomWorkspace() {
             {messages.map((message, index) => (
               <article className={`mentor-message mentor-message--${message.role}`} key={`${message.role}-${index}`}>
                 <div className="mentor-avatar">{message.role === "user" ? "You" : "AI"}</div>
-                <div className="mentor-bubble">{renderMentorMarkdown(message.content || (sending ? "Thinking..." : ""))}</div>
+                <div className="mentor-bubble">
+                  <div className="mentor-bubble-content">
+                    {renderMentorMarkdown(message.content || (sending ? "Thinking..." : ""))}
+                  </div>
+                </div>
               </article>
             ))}
           </div>

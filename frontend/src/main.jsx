@@ -27,6 +27,8 @@ import "./styles.css";
 const LandingPage = lazy(() => import("./components/LandingPage"));
 const FocusModePage = lazy(() => import("./components/focus/FocusModePage"));
 const MentorRoomWorkspace = lazy(() => import("./components/mentor/MentorRoomWorkspace"));
+const CareerRoadmapWorkspace = lazy(() => import("./components/career/CareerRoadmapWorkspace"));
+const AIMockInterviewPage = lazy(() => import("./components/interview/AIMockInterviewPage"));
 const PlanningDashboard = lazy(() => import("./components/planning/PlanningDashboard"));
 const SmartScheduleGenerator = lazy(() => import("./components/planning/SmartScheduleGenerator"));
 const Resources = lazy(() => import("./components/Resources")); // Removed .jsx for consistency
@@ -81,6 +83,7 @@ const navGroups = [
     items: [
       { label: "Quizzes", to: "/quiz", icon: Brain },
       { label: "Mock Tests", to: "/mock-tests", icon: ShieldCheck },
+      { label: "AI Interview", to: "/mock-interview", icon: ScanFace },
       { label: "Focus Arena", to: "/focus-arena", icon: Swords },
     ],
   },
@@ -99,6 +102,7 @@ const navGroups = [
     items: [
       { label: "AI Chat", to: "/assistant", icon: MessageCircle },
       { label: "Mentor Room", to: "/mentor-room", icon: Bot },
+      { label: "Career Roadmap", to: "/career-roadmap", icon: BriefcaseBusiness },
       { label: "Study DNA", to: "/study-dna", icon: Dna },
     ],
   },
@@ -443,12 +447,14 @@ function Shell({ auth }) {
     "/focus": { title: "Smart Focus Mode", sub: "Track deep work sessions and interruptions." },
     "/exam-command": { title: "Exam Command Center", sub: "Countdowns, readiness, last-minute planning, and exam risk control." },
     "/mock-tests": { title: "Mock Test Simulator", sub: "Realistic timed exams with marking, navigation, percentile, and AI review." },
+    "/mock-interview": { title: "AI Mock Interview", sub: "Practice realistic interview rounds with focused AI feedback." },
     "/pomodoro": { title: "Pomodoro Timer", sub: "Optimized intervals for maximum retention." },
     "/study-dna": { title: "Study DNA", sub: "AI behavioral genome for learning personality, focus rhythm, and productivity identity." },
     "/time-machine": { title: "AI Time Machine", sub: "Forecast future exam outcomes and compare current vs optimized performance." },
     "/brain-energy": { title: "Brain Energy Monitor", sub: "Fatigue, mental load, burnout risk, and recovery timing in one neural dashboard." },
     "/knowledge-map": { title: "Knowledge Map", sub: "Interactive topic graph for mastery, weak clusters, and AI-discovered relationships." },
     "/mentor-room": { title: "AI Mentor Room", sub: "Premium coaching, motivation, strategy feedback, and conversational guidance." },
+    "/career-roadmap": { title: "Career & Skill Roadmap", sub: "AI career planning, skill gaps, projects, readiness scoring, and interview preparation." },
     "/focus-arena": { title: "Focus Arena", sub: "Competitive deep-work rooms, rankings, timers, and productivity challenges." },
     "/memory-vault": { title: "Memory Vault", sub: "Spaced repetition, forgetting curves, heatmaps, and retention intelligence." },
     "/study-universe": { title: "Study Universe", sub: "A cosmic mastery system where subjects become planets and achievements unlock progress." },
@@ -591,6 +597,7 @@ function Shell({ auth }) {
             <Route path="/resources" element={<LazyPage><Resources /></LazyPage>} />
             <Route path="/quiz"      element={<Quiz />} />
             <Route path="/mock-tests" element={<MockTests />} />
+            <Route path="/mock-interview" element={<LazyPage><AIMockInterviewPage /></LazyPage>} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/wellness"  element={<Wellness />} />
             <Route path="/groups"    element={<StudyGroups />} />
@@ -603,6 +610,7 @@ function Shell({ auth }) {
             <Route path="/brain-energy"     element={<BrainEnergyPage />} />
             <Route path="/knowledge-map"    element={<KnowledgeMapPage />} />
             <Route path="/mentor-room"      element={<LazyPage><MentorRoomWorkspace /></LazyPage>} />
+            <Route path="/career-roadmap"   element={<LazyPage><CareerRoadmapWorkspace /></LazyPage>} />
             <Route path="/focus-arena"      element={<FocusArenaPage />} />
             <Route path="/memory-vault"     element={<MemoryVaultPage />} />
             <Route path="/study-universe"   element={<StudyUniversePage />} />

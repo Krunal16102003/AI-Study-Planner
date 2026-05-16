@@ -12,6 +12,11 @@ from .models import (
     AIRecommendation,
     AIMemory,
     BurnoutSnapshot,
+    CareerInterviewSession,
+    CareerLearningInsight,
+    CareerProjectRecommendation,
+    CareerReadinessSnapshot,
+    CareerRoadmap,
     FocusSession,
     MentorConversation,
     MentorRecommendation,
@@ -26,6 +31,7 @@ from .models import (
     StudyPlan,
     StudySession,
     Subject,
+    SkillProfile,
     WeakTopic,
 )
 from .pagination import StudyPlanPagination
@@ -33,6 +39,11 @@ from .serializers import (
     AIRecommendationSerializer,
     AIMemorySerializer,
     BurnoutSnapshotSerializer,
+    CareerInterviewSessionSerializer,
+    CareerLearningInsightSerializer,
+    CareerProjectRecommendationSerializer,
+    CareerReadinessSnapshotSerializer,
+    CareerRoadmapSerializer,
     FocusSessionSerializer,
     MentorConversationSerializer,
     MentorRecommendationSerializer,
@@ -46,19 +57,24 @@ from .serializers import (
     StudyPlanSerializer,
     StudySessionSerializer,
     SubjectSerializer,
+    SkillProfileSerializer,
     WeakTopicSerializer,
 )
 from .services import (
     adaptive_pomodoro_settings,
     burnout_detection,
     calculate_user_stats,
+    career_dashboard_payload,
     chatbot_reply,
     daily_study_recommendation,
+    evaluate_career_interview,
     focus_mode_summary,
     get_resource_stats,
     _generate_simulated_external_resources, # Import the new helper
     generate_quiz_questions,
     generate_mock_test,
+    generate_career_readiness,
+    generate_career_roadmap,
     get_performance_metrics,
     generate_study_plan,
     group_leaderboard,
@@ -228,6 +244,55 @@ class MentorRecommendationViewSet(OwnedModelViewSet):
     serializer_class = MentorRecommendationSerializer
 
 
+class CareerRoadmapViewSet(OwnedModelViewSet):
+    queryset = CareerRoadmap.objects.all().prefetch_related(
+        "phases",
+        "skills",
+        "project_recommendations",
+        "readiness_snapshots",
+        "learning_insights",
+    )
+    serializer_class = CareerRoadmapSerializer
+
+    @decorators.action(detail=False, methods=["post"], url_path="generate")
+    def generate(self, request):
+        try:
+            roadmap = generate_career_roadmap(request.user, request.data)
+        except (TypeError, ValueError) as exc:
+            return response.Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        return response.Response(CareerRoadmapSerializer(roadmap).data, status=status.HTTP_201_CREATED)
+
+    @decorators.action(detail=True, methods=["post"], url_path="refresh-readiness")
+    def refresh_readiness(self, request, pk=None):
+        snapshot = generate_career_readiness(request.user, self.get_object())
+        return response.Response(CareerReadinessSnapshotSerializer(snapshot).data, status=status.HTTP_201_CREATED)
+
+
+class SkillProfileViewSet(OwnedModelViewSet):
+    queryset = SkillProfile.objects.all().select_related("roadmap")
+    serializer_class = SkillProfileSerializer
+
+
+class CareerProjectRecommendationViewSet(OwnedModelViewSet):
+    queryset = CareerProjectRecommendation.objects.all().select_related("roadmap")
+    serializer_class = CareerProjectRecommendationSerializer
+
+
+class CareerReadinessSnapshotViewSet(OwnedModelViewSet):
+    queryset = CareerReadinessSnapshot.objects.all().select_related("roadmap")
+    serializer_class = CareerReadinessSnapshotSerializer
+
+
+class CareerLearningInsightViewSet(OwnedModelViewSet):
+    queryset = CareerLearningInsight.objects.all().select_related("roadmap")
+    serializer_class = CareerLearningInsightSerializer
+
+
+class CareerInterviewSessionViewSet(OwnedModelViewSet):
+    queryset = CareerInterviewSession.objects.all().select_related("roadmap")
+    serializer_class = CareerInterviewSessionSerializer
+
+
 class BurnoutSnapshotViewSet(OwnedModelViewSet):
     queryset = BurnoutSnapshot.objects.all()
     serializer_class = BurnoutSnapshotSerializer
@@ -253,6 +318,28 @@ class DailyRecommendationView(views.APIView):
 class MentorRoomView(views.APIView):
     def get(self, request):
         return response.Response(mentor_room_payload(request.user))
+
+
+class CareerDashboardView(views.APIView):
+    def get(self, request):
+        payload = career_dashboard_payload(request.user)
+        return response.Response({
+            "roadmap": CareerRoadmapSerializer(payload["roadmap"]).data if payload["roadmap"] else None,
+            "readiness": CareerReadinessSnapshotSerializer(payload["readiness"]).data if payload["readiness"] else None,
+            "skill_gaps": payload["skill_gaps"],
+            "projects": CareerProjectRecommendationSerializer(payload["projects"], many=True).data,
+            "insights": CareerLearningInsightSerializer(payload["insights"], many=True).data,
+            "interview_history": CareerInterviewSessionSerializer(payload["interview_history"], many=True).data,
+        })
+
+
+class CareerInterviewEvaluateView(views.APIView):
+    def post(self, request):
+        try:
+            session = evaluate_career_interview(request.user, request.data)
+        except ValueError as exc:
+            return response.Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        return response.Response(CareerInterviewSessionSerializer(session).data, status=status.HTTP_201_CREATED)
 
 
 class MentorChatView(views.APIView):

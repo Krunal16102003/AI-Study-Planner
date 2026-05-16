@@ -4,6 +4,12 @@ from .models import (
     AIRecommendation,
     AIMemory,
     BurnoutSnapshot,
+    CareerInterviewSession,
+    CareerLearningInsight,
+    CareerProjectRecommendation,
+    CareerReadinessSnapshot,
+    CareerRoadmap,
+    CareerRoadmapPhase,
     MentorConversation,
     MentorMessage,
     MentorRecommendation,
@@ -16,6 +22,7 @@ from .models import (
     StudyPlan,
     StudySession,
     Subject,
+    SkillProfile,
     WeakTopic,
 )
 
@@ -35,3 +42,10 @@ admin.site.register(StudyInsight)
 admin.site.register(MentorRecommendation)
 admin.site.register(Notification)
 admin.site.register(PomodoroSession)
+admin.site.register(CareerRoadmap)
+admin.site.register(CareerRoadmapPhase)
+admin.site.register(SkillProfile)
+admin.site.register(CareerProjectRecommendation)
+admin.site.register(CareerReadinessSnapshot)
+admin.site.register(CareerLearningInsight)
+admin.site.register(CareerInterviewSession)

@@ -10,6 +10,13 @@ from planner.views import (
     AnalyticsView,
     BurnoutSnapshotViewSet,
     BurnoutView,
+    CareerDashboardView,
+    CareerInterviewEvaluateView,
+    CareerInterviewSessionViewSet,
+    CareerLearningInsightViewSet,
+    CareerProjectRecommendationViewSet,
+    CareerReadinessSnapshotViewSet,
+    CareerRoadmapViewSet,
     ChatbotView,
     DailyRecommendationView,
     DashboardView,
@@ -32,6 +39,7 @@ from planner.views import (
     QuizQuestionViewSet,
     RecommendationView,
     SmartNotificationView,
+    SkillProfileViewSet,
     StudyInsightViewSet,
     StudyGroupViewSet,
     StudyPlanViewSet,
@@ -54,6 +62,12 @@ router.register("mentor-memories", AIMemoryViewSet, basename="mentor-memory")
 router.register("mentor-insights", StudyInsightViewSet, basename="mentor-insight")
 router.register("mentor-recommendations", MentorRecommendationViewSet, basename="mentor-recommendation")
 router.register("burnout-snapshots", BurnoutSnapshotViewSet, basename="burnout-snapshot")
+router.register("career-roadmaps", CareerRoadmapViewSet, basename="career-roadmap")
+router.register("career-skills", SkillProfileViewSet, basename="career-skill")
+router.register("career-projects", CareerProjectRecommendationViewSet, basename="career-project")
+router.register("career-readiness", CareerReadinessSnapshotViewSet, basename="career-readiness")
+router.register("career-insights", CareerLearningInsightViewSet, basename="career-insight")
+router.register("career-interviews", CareerInterviewSessionViewSet, basename="career-interview")
 router.register("notifications", NotificationViewSet, basename="notification")
 router.register("pomodoro-sessions", PomodoroSessionViewSet, basename="pomodoro-session")
 router.register("focus-sessions", FocusSessionViewSet, basename="focus-session")
@@ -76,6 +90,8 @@ urlpatterns = [
     path("api/daily-recommendation/", DailyRecommendationView.as_view(), name="daily_recommendation"),
     path("api/chatbot/", ChatbotView.as_view(), name="chatbot"),
     path("api/mentor-room/", MentorRoomView.as_view(), name="mentor_room"),
+    path("api/career-dashboard/", CareerDashboardView.as_view(), name="career_dashboard"),
+    path("api/career-interview/evaluate/", CareerInterviewEvaluateView.as_view(), name="career_interview_evaluate"),
     path("api/mentor-chat/", MentorChatView.as_view(), name="mentor_chat"),
     path("api/mentor-chat/stream/", MentorChatStreamView.as_view(), name="mentor_chat_stream"),
     path("api/pomodoro/recommendation/", PomodoroRecommendationView.as_view(), name="pomodoro_recommendation"),

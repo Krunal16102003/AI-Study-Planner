@@ -4,6 +4,12 @@ from .models import (
     AIRecommendation,
     AIMemory,
     BurnoutSnapshot,
+    CareerInterviewSession,
+    CareerLearningInsight,
+    CareerProjectRecommendation,
+    CareerReadinessSnapshot,
+    CareerRoadmap,
+    CareerRoadmapPhase,
     FocusSession,
     MentorConversation,
     MentorMessage,
@@ -19,6 +25,7 @@ from .models import (
     StudyPlan,
     StudySession,
     Subject,
+    SkillProfile,
     WeakTopic,
 )
 
@@ -142,6 +149,61 @@ class StudyInsightSerializer(serializers.ModelSerializer):
 class MentorRecommendationSerializer(serializers.ModelSerializer):
     class Meta:
         model = MentorRecommendation
+        fields = "__all__"
+        read_only_fields = ["user"]
+
+
+class CareerRoadmapPhaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CareerRoadmapPhase
+        fields = "__all__"
+        read_only_fields = ["roadmap"]
+
+
+class SkillProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SkillProfile
+        fields = "__all__"
+        read_only_fields = ["user"]
+
+
+class CareerProjectRecommendationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CareerProjectRecommendation
+        fields = "__all__"
+        read_only_fields = ["user"]
+
+
+class CareerReadinessSnapshotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CareerReadinessSnapshot
+        fields = "__all__"
+        read_only_fields = ["user"]
+
+
+class CareerLearningInsightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CareerLearningInsight
+        fields = "__all__"
+        read_only_fields = ["user"]
+
+
+class CareerInterviewSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CareerInterviewSession
+        fields = "__all__"
+        read_only_fields = ["user"]
+
+
+class CareerRoadmapSerializer(serializers.ModelSerializer):
+    phases = CareerRoadmapPhaseSerializer(many=True, read_only=True)
+    skills = SkillProfileSerializer(many=True, read_only=True)
+    project_recommendations = CareerProjectRecommendationSerializer(many=True, read_only=True)
+    readiness_snapshots = CareerReadinessSnapshotSerializer(many=True, read_only=True)
+    learning_insights = CareerLearningInsightSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = CareerRoadmap
         fields = "__all__"
         read_only_fields = ["user"]
 
