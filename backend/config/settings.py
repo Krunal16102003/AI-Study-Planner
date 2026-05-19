@@ -5,7 +5,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 LOCAL_DATA_DIR = Path(os.getenv("LOCALAPPDATA", BASE_DIR)) / "AIStudyPlanner"
 LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-ai-study-planner-secret")
+SECRET_KEY = os.getenv(
+    "DJANGO_SECRET_KEY",
+    "dev-only-ai-study-planner-secret-change-before-production-9f4d7c2a6b8e",
+)
 DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 if DEBUG and "testserver" not in ALLOWED_HOSTS:
@@ -20,7 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
-    "accounts",
+    "accounts.apps.AccountsConfig",
     "planner",
 ]
 
@@ -89,6 +92,13 @@ USE_TZ = True
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+SECURE_SSL_REDIRECT = os.getenv("DJANGO_SECURE_SSL_REDIRECT", "0") == "1"
+SESSION_COOKIE_SECURE = os.getenv("DJANGO_SESSION_COOKIE_SECURE", "0" if DEBUG else "1") == "1"
+CSRF_COOKIE_SECURE = os.getenv("DJANGO_CSRF_COOKIE_SECURE", "0" if DEBUG else "1") == "1"
+SECURE_HSTS_SECONDS = int(os.getenv("DJANGO_SECURE_HSTS_SECONDS", "0" if DEBUG else "31536000"))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv("DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", "0" if DEBUG else "1") == "1"
+SECURE_HSTS_PRELOAD = os.getenv("DJANGO_SECURE_HSTS_PRELOAD", "0" if DEBUG else "1") == "1"
+
 if DEBUG and not os.getenv("CORS_ALLOWED_ORIGINS"):
     # During local development the frontend may run from Vite, VS Code Live
     # Server, a preview build, or even a file origin. JWT auth does not use
@@ -98,8 +108,13 @@ if DEBUG and not os.getenv("CORS_ALLOWED_ORIGINS"):
 else:
     CORS_ALLOWED_ORIGINS = os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173",
+        "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173",
     ).split(",")
+
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173",
+).split(",")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

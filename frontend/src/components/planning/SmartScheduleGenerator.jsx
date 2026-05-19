@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Brain,
+  CalendarCheck,
   CalendarDays,
+  Clock3,
   GripVertical,
   Loader2,
   Plus,
@@ -40,11 +42,30 @@ function groupSessionsByDate(sessions) {
   }, {});
 }
 
+function formatDateLabel(value) {
+  if (!value) return "";
+  return new Intl.DateTimeFormat("en", { weekday: "short", month: "short", day: "numeric" }).format(new Date(`${value}T00:00:00`));
+}
+
 function getSubjectPriority(subject) {
   const weakCount = subject.weak_topics?.split(",").filter(Boolean).length || 0;
   if (weakCount > 1 || subject.difficulty === "high") return "High";
   if (weakCount === 1 || subject.difficulty === "medium") return "Medium";
   return "Balanced";
+}
+
+function getPlanStats(plan) {
+  const sessions = plan?.sessions || [];
+  const studyBlocks = sessions.filter(session => session.task_type !== "break");
+  const revisionBlocks = sessions.filter(session => session.task_type === "revision").length;
+  const breaks = sessions.filter(session => session.task_type === "break").length;
+  const subjects = new Set(studyBlocks.map(session => session.subject_name || session.title?.split(" - ")?.[0]).filter(Boolean));
+  return {
+    studyBlocks: studyBlocks.length,
+    revisionBlocks,
+    breaks,
+    subjects: subjects.size,
+  };
 }
 
 function sessionTone(type) {
@@ -64,8 +85,20 @@ export default function SmartScheduleGenerator() {
   const [draggedSession, setDraggedSession] = useState(null);
 
   const sessions = plan?.sessions || [];
+  const planStats = useMemo(() => getPlanStats(plan), [plan]);
   const sessionsByDate = useMemo(() => groupSessionsByDate(sessions), [sessions]);
-  const dates = Object.keys(sessionsByDate).sort().slice(0, 7);
+  const dates = useMemo(() => {
+    const sourceDate = plan?.start_date || today;
+    return Array.from({ length: 7 }, (_, index) => {
+      const next = new Date(`${sourceDate}T00:00:00`);
+      next.setDate(next.getDate() + index);
+      return next.toISOString().slice(0, 10);
+    });
+  }, [plan?.start_date]);
+  const dailyCards = useMemo(() => dates.map(date => ({
+    date,
+    sessions: sessionsByDate[date] || [],
+  })), [dates, sessionsByDate]);
 
   useEffect(() => {
     loadPlans();
@@ -143,7 +176,9 @@ export default function SmartScheduleGenerator() {
         subjects: validSubjects,
       });
       setPlan(data);
-      await loadPlans();
+      const refreshed = await api.get("/study-plans/");
+      const rows = Array.isArray(refreshed.data) ? refreshed.data : refreshed.data.results || [];
+      setPlans(rows);
       setMessage("Schedule generated and saved.");
     } catch (err) {
       setMessage(getApiErrorMessage(err, "Could not generate the schedule."));
@@ -186,7 +221,7 @@ export default function SmartScheduleGenerator() {
           <p>Prioritizes weak topics, balances difficulty, increases revision near exam dates, and inserts automatic breaks.</p>
         </div>
         <div className="smart-schedule-hero__metric">
-          <strong>{sessions.length || "--"}</strong>
+          <strong>{planStats.studyBlocks || "--"}</strong>
           <span>saved blocks</span>
         </div>
       </section>
@@ -256,6 +291,7 @@ export default function SmartScheduleGenerator() {
               <h2>Subject Priority</h2>
               <Brain size={18} />
             </div>
+            <p className="smart-helper-text">Weak topics, higher difficulty, and near exam dates are automatically weighted first.</p>
             {form.subjects.map((subject, index) => (
               <div className="smart-priority-row" key={`${subject.name}-${index}`}>
                 <span>{subject.name || "Untitled subject"}</span>
@@ -283,33 +319,61 @@ export default function SmartScheduleGenerator() {
 
       <section className="smart-schedule-output">
         <div className="planning-section-title">
-          <h2>Weekly Calendar</h2>
+          <h2>Generated Schedule</h2>
           <span>Drag cards between days to adjust the plan</span>
         </div>
         {loading ? (
-          <SmartScheduleSkeleton />
+          <SmartScheduleOutputSkeleton />
         ) : plan ? (
-          <div className="smart-week-grid">
-            {dates.map(date => (
-              <article className="smart-week-day" key={date} onDragOver={event => event.preventDefault()} onDrop={event => dropSession(event, date)}>
-                <strong>{date}</strong>
-                {sessionsByDate[date].map(session => (
-                  <button
-                    type="button"
-                    draggable
-                    className={`smart-session-card ${sessionTone(session.task_type)}`}
-                    key={session.id}
-                    onDragStart={event => dragStart(event, session.id)}
-                  >
-                    <GripVertical size={14} />
-                    <span>{session.start_time?.slice(0, 5)}-{session.end_time?.slice(0, 5)}</span>
-                    <b>{session.title}</b>
-                    <small>{session.task_type}</small>
-                  </button>
-                ))}
-              </article>
-            ))}
-          </div>
+          <>
+            <div className="smart-plan-summary panel">
+              <div><CalendarCheck size={18} /><span>Subjects</span><strong>{planStats.subjects}</strong></div>
+              <div><Brain size={18} /><span>Revision blocks</span><strong>{planStats.revisionBlocks}</strong></div>
+              <div><Clock3 size={18} /><span>Breaks</span><strong>{planStats.breaks}</strong></div>
+              <div><CalendarDays size={18} /><span>Range</span><strong>{formatDateLabel(plan.start_date)} - {formatDateLabel(plan.end_date)}</strong></div>
+            </div>
+
+            <div className="smart-day-card-grid">
+              {dailyCards.map(day => (
+                <article className="smart-day-card panel" key={`card-${day.date}`}>
+                  <div className="smart-day-card__top">
+                    <strong>{formatDateLabel(day.date)}</strong>
+                    <span>{day.sessions.filter(session => session.task_type !== "break").length} focus blocks</span>
+                  </div>
+                  {day.sessions.slice(0, 4).map(session => (
+                    <p className={`smart-day-line ${sessionTone(session.task_type)}`} key={`line-${session.id}`}>
+                      <span>{session.start_time?.slice(0, 5)}</span>
+                      <b>{session.title}</b>
+                    </p>
+                  ))}
+                  {!day.sessions.length && <p className="empty">No blocks scheduled.</p>}
+                </article>
+              ))}
+            </div>
+
+            <div className="smart-week-grid">
+              {dailyCards.map(day => (
+                <article className="smart-week-day" key={day.date} onDragOver={event => event.preventDefault()} onDrop={event => dropSession(event, day.date)}>
+                  <strong>{formatDateLabel(day.date)}</strong>
+                  {day.sessions.map(session => (
+                    <button
+                      type="button"
+                      draggable
+                      className={`smart-session-card ${sessionTone(session.task_type)}`}
+                      key={session.id}
+                      onDragStart={event => dragStart(event, session.id)}
+                    >
+                      <GripVertical size={14} />
+                      <span>{session.start_time?.slice(0, 5)}-{session.end_time?.slice(0, 5)}</span>
+                      <b>{session.title}</b>
+                      <small>{session.task_type}</small>
+                    </button>
+                  ))}
+                  {!day.sessions.length && <p className="empty">Drop a block here.</p>}
+                </article>
+              ))}
+            </div>
+          </>
         ) : (
           <div className="panel smart-empty-state">
             <CalendarDays size={32} />
@@ -335,5 +399,19 @@ function SmartScheduleSkeleton() {
         ))}
       </section>
     </div>
+  );
+}
+
+function SmartScheduleOutputSkeleton() {
+  return (
+    <section className="panel planning-skeleton" aria-label="Generating smart schedule">
+      {Array.from({ length: 7 }).map((_, index) => (
+        <div key={index}>
+          <span />
+          <strong />
+          <p />
+        </div>
+      ))}
+    </section>
   );
 }

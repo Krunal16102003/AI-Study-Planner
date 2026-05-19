@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   BookOpen,
@@ -17,7 +17,7 @@ import { api } from "../services/api";
 
 const welcomeMessage = {
   role: "assistant",
-  text: "Hi there! 👋\nI’m your AI Study Assistant.\nHow can I help you today?",
+  text: "Hi there.\nI'm your AI Study Assistant.\nHow can I help you today?",
 };
 
 const suggestions = [
@@ -28,6 +28,41 @@ const suggestions = [
   { label: "Generate Revision Schedule", icon: Sparkles, prompt: "Generate a revision schedule for this week." },
   { label: "Explain Difficult Topic", icon: WandSparkles, prompt: "Explain a difficult topic in simple terms." },
 ];
+
+function AssistantMarkdown({ text }) {
+  const lines = String(text || "")
+    .replace(/\r\n/g, "\n")
+    .split("\n")
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  return (
+    <div className="ai-assistant-markdown">
+      {lines.map((line, index) => {
+        const heading = line.replace(/^#{1,6}\s*/, "").replace(/^\*\*(.+)\*\*:?$/, "$1");
+
+        if (/^#{1,6}\s+/.test(line)) return <h3 key={index}>{renderInlineMarkdown(heading)}</h3>;
+        if (/^\*\*.+\*\*:?$/.test(line)) return <h4 key={index}>{renderInlineMarkdown(heading)}</h4>;
+        if (/^\d+\.\s+/.test(line)) {
+          return <p key={index} className="ai-assistant-step">{renderInlineMarkdown(line.replace(/^\d+\.\s+/, ""))}</p>;
+        }
+        if (/^[-*]\s+/.test(line)) {
+          return <p key={index} className="ai-assistant-bullet">{renderInlineMarkdown(line.replace(/^[-*]\s+/, ""))}</p>;
+        }
+
+        return <p key={index}>{renderInlineMarkdown(line)}</p>;
+      })}
+    </div>
+  );
+}
+
+function renderInlineMarkdown(text) {
+  return String(text).split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g).map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) return <strong key={index}>{part.slice(2, -2)}</strong>;
+    if (part.startsWith("*") && part.endsWith("*")) return <em key={index}>{part.slice(1, -1)}</em>;
+    return <Fragment key={index}>{part}</Fragment>;
+  });
+}
 
 function MessageBubble({ message }) {
   const isUser = message.role === "user";
@@ -44,7 +79,9 @@ function MessageBubble({ message }) {
           <Bot size={15} />
         </span>
       )}
-      <div className="ai-assistant-bubble">{message.text}</div>
+      <div className="ai-assistant-bubble">
+        {isUser ? message.text : <AssistantMarkdown text={message.text} />}
+      </div>
     </motion.div>
   );
 }
@@ -115,17 +152,21 @@ export default function FloatingAIAssistant() {
     setIsTyping(true);
 
     try {
-      const { data } = await api.post("/chatbot/", { message: prompt });
+      const { data } = await api.post("/chatbot/", {
+        message: prompt,
+        mode: "quick",
+        depth: "concise",
+      });
       setMessages(current => [
         ...current,
-        { role: "assistant", text: data?.reply || "I’m ready to help. Tell me what you’re studying." },
+        { role: "assistant", text: data?.reply || "I'm ready to help. Tell me what you're studying." },
       ]);
     } catch {
       setMessages(current => [
         ...current,
         {
           role: "assistant",
-          text: "I can’t reach the study assistant service right now. Try again in a moment, or ask me to help outline a plan here.",
+          text: "I can't reach the study assistant service right now. Try again in a moment, or ask me to help outline a plan here.",
         },
       ]);
     } finally {

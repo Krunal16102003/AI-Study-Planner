@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_str
@@ -43,13 +44,10 @@ class PasswordResetRequestView(views.APIView):
             )
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
-        return response.Response(
-            {
-                "detail": "Password reset token generated.",
-                "uid": uid,
-                "token": token,
-            }
-        )
+        payload = {"detail": "If an account exists, reset instructions have been prepared."}
+        if settings.DEBUG:
+            payload.update({"uid": uid, "token": token})
+        return response.Response(payload)
 
 
 class PasswordResetConfirmView(views.APIView):

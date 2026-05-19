@@ -1,5 +1,6 @@
 from datetime import datetime, time
 import json
+import logging
 
 from django.http import StreamingHttpResponse
 from django.db.models import Avg, Count, Sum
@@ -88,6 +89,8 @@ from .services import (
     subject_readiness,
     weakness_analysis,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class OwnedModelViewSet(viewsets.ModelViewSet):
@@ -505,8 +508,8 @@ class DashboardView(views.APIView):
             }
             cache.set(cache_key, payload, 30)
             return response.Response(payload)
-        except Exception as e:
-            print(f"DashboardView error: {e}") # Log the error for debugging
+        except Exception:
+            logger.exception("DashboardView failed")
             return response.Response(
                 {"success": False, "message": "Unable to load dashboard data. Please try again later."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -525,8 +528,8 @@ class AnalyticsView(views.APIView):
             else:
                 cached["success"] = True
             return response.Response(cached)
-        except Exception as e:
-            print(f"AnalyticsView error: {e}")
+        except Exception:
+            logger.exception("AnalyticsView failed")
             return response.Response(
                 {"success": False, "message": "Unable to load analytics data. Please try again later."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -537,8 +540,8 @@ class RecommendationView(views.APIView):
     def get(self, request):
         try:
             return response.Response({"success": True, "recommendations": resource_recommendations(request.user)})
-        except Exception as e:
-            print(f"RecommendationView error: {e}")
+        except Exception:
+            logger.exception("RecommendationView failed")
             return response.Response(
                 {"success": False, "message": "Unable to load recommendations. Please try again later."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -550,8 +553,8 @@ class ResourceListView(views.APIView):
     def get(self, request):
         try:
             return response.Response({"success": True, "resources": resource_recommendations(request.user)})
-        except Exception as e:
-            print(f"ResourceListView error: {e}")
+        except Exception:
+            logger.exception("ResourceListView failed")
             return response.Response(
                 {"success": False, "message": "Unable to load resource list. Please try again later."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -563,8 +566,8 @@ class RecommendedResourcesView(views.APIView):
     def get(self, request):
         try:
             return response.Response({"success": True, "recommended": resource_recommendations(request.user)[:8]})
-        except Exception as e:
-            print(f"RecommendedResourcesView error: {e}")
+        except Exception:
+            logger.exception("RecommendedResourcesView failed")
             return response.Response(
                 {"success": False, "message": "Unable to load recommended resources. Please try again later."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -579,8 +582,8 @@ class WeakTopicResourcesView(views.APIView):
                 "success": True, 
                 "weak_topics": weakness_analysis(request.user)[:5]
             })
-        except Exception as e:
-            print(f"WeakTopicResourcesView error: {e}")
+        except Exception:
+            logger.exception("WeakTopicResourcesView failed")
             return response.Response(
                 {"success": False, "message": "Unable to load weak topic resources. Please try again later."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -607,8 +610,8 @@ class ResourcesDashboardView(views.APIView):
                 "revision_tasks": revision_recommendations(user, horizon_days=7),
                 "all_resources": resources, # For filtering in frontend
             })
-        except Exception as e:
-            print(f"ResourcesDashboardView error: {e}")
+        except Exception:
+            logger.exception("ResourcesDashboardView failed")
             return response.Response(
                 {"success": False, "message": "Unable to load resources dashboard. Please try again later."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -680,8 +683,8 @@ class ExamCommandView(views.APIView):
                 )
 
             return response.Response({"success": True, "upcoming_exams": upcoming})
-        except Exception as exc:
-            print(f"ExamCommandView error: {exc}")
+        except Exception:
+            logger.exception("ExamCommandView failed")
             return response.Response(
                 {"success": False, "detail": "Unable to load exam command data."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -717,8 +720,8 @@ class PerformanceTrackingView(views.APIView):
     def get(self, request):
         try:
             return response.Response({"success": True, "metrics": get_performance_metrics(request.user)})
-        except Exception as e:
-            print(f"PerformanceTrackingView error: {e}")
+        except Exception:
+            logger.exception("PerformanceTrackingView failed")
             return response.Response(
                 {"success": False, "message": "Unable to load performance metrics. Please try again later."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR

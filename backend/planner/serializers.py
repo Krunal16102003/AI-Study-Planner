@@ -30,8 +30,26 @@ from .models import (
 )
 
 
-class WeakTopicSerializer(serializers.ModelSerializer):
+class OwnedRelationValidatorMixin:
+    owned_relation_fields = ()
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        if not user or not user.is_authenticated:
+            return attrs
+
+        for field in self.owned_relation_fields:
+            related = attrs.get(field)
+            if related is not None and getattr(related, "user_id", None) != user.id:
+                raise serializers.ValidationError({field: "Invalid selection for this account."})
+        return attrs
+
+
+class WeakTopicSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
     subject_name = serializers.CharField(source="subject.name", read_only=True)
+    owned_relation_fields = ("subject",)
 
     class Meta:
         model = WeakTopic
@@ -45,7 +63,6 @@ class SubjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subject
-        fields = "__all__"
         fields = ["id", "name", "exam_date", "difficulty", "priority", "confidence", "target_score", "weak_topics", "days_remaining"]
         read_only_fields = ["user"]
 
@@ -55,9 +72,10 @@ class SubjectSerializer(serializers.ModelSerializer):
         return max((obj.exam_date - timezone.localdate()).days, 0)
 
 
-class StudySessionSerializer(serializers.ModelSerializer):
+class StudySessionSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
     subject_name = serializers.CharField(source="subject.name", read_only=True)
     topic_title = serializers.CharField(source="weak_topic.title", read_only=True)
+    owned_relation_fields = ("plan", "subject", "weak_topic")
 
     class Meta:
         model = StudySession
@@ -74,8 +92,9 @@ class StudyPlanSerializer(serializers.ModelSerializer):
         read_only_fields = ["user"]
 
 
-class ProgressLogSerializer(serializers.ModelSerializer):
+class ProgressLogSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
     subject_name = serializers.CharField(source="subject.name", read_only=True)
+    owned_relation_fields = ("subject", "weak_topic")
 
     class Meta:
         model = ProgressLog
@@ -83,8 +102,9 @@ class ProgressLogSerializer(serializers.ModelSerializer):
         read_only_fields = ["user"]
 
 
-class QuizQuestionSerializer(serializers.ModelSerializer):
+class QuizQuestionSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
     subject_name = serializers.CharField(source="subject.name", read_only=True)
+    owned_relation_fields = ("subject", "weak_topic")
 
     class Meta:
         model = QuizQuestion
@@ -99,9 +119,10 @@ class AIRecommendationSerializer(serializers.ModelSerializer):
         read_only_fields = ["user"]
 
 
-class QuizAttemptSerializer(serializers.ModelSerializer):
+class QuizAttemptSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
     subject_name = serializers.CharField(source="subject.name", read_only=True)
     topic_title = serializers.CharField(source="weak_topic.title", read_only=True)
+    owned_relation_fields = ("subject", "weak_topic")
 
     class Meta:
         model = QuizAttempt
@@ -160,35 +181,45 @@ class CareerRoadmapPhaseSerializer(serializers.ModelSerializer):
         read_only_fields = ["roadmap"]
 
 
-class SkillProfileSerializer(serializers.ModelSerializer):
+class SkillProfileSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
+    owned_relation_fields = ("roadmap",)
+
     class Meta:
         model = SkillProfile
         fields = "__all__"
         read_only_fields = ["user"]
 
 
-class CareerProjectRecommendationSerializer(serializers.ModelSerializer):
+class CareerProjectRecommendationSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
+    owned_relation_fields = ("roadmap",)
+
     class Meta:
         model = CareerProjectRecommendation
         fields = "__all__"
         read_only_fields = ["user"]
 
 
-class CareerReadinessSnapshotSerializer(serializers.ModelSerializer):
+class CareerReadinessSnapshotSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
+    owned_relation_fields = ("roadmap",)
+
     class Meta:
         model = CareerReadinessSnapshot
         fields = "__all__"
         read_only_fields = ["user"]
 
 
-class CareerLearningInsightSerializer(serializers.ModelSerializer):
+class CareerLearningInsightSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
+    owned_relation_fields = ("roadmap",)
+
     class Meta:
         model = CareerLearningInsight
         fields = "__all__"
         read_only_fields = ["user"]
 
 
-class CareerInterviewSessionSerializer(serializers.ModelSerializer):
+class CareerInterviewSessionSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
+    owned_relation_fields = ("roadmap",)
+
     class Meta:
         model = CareerInterviewSession
         fields = "__all__"
@@ -215,8 +246,9 @@ class NotificationSerializer(serializers.ModelSerializer):
         read_only_fields = ["user"]
 
 
-class PomodoroSessionSerializer(serializers.ModelSerializer):
+class PomodoroSessionSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
     subject_name = serializers.CharField(source="subject.name", read_only=True)
+    owned_relation_fields = ("subject",)
 
     class Meta:
         model = PomodoroSession
@@ -247,8 +279,9 @@ class StudyGroupSerializer(serializers.ModelSerializer):
         return obj.memberships.count()
 
 
-class FocusSessionSerializer(serializers.ModelSerializer):
+class FocusSessionSerializer(OwnedRelationValidatorMixin, serializers.ModelSerializer):
     subject_name = serializers.CharField(source="subject.name", read_only=True)
+    owned_relation_fields = ("subject",)
 
     class Meta:
         model = FocusSession

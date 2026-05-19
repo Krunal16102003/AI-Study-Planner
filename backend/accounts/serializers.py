@@ -26,9 +26,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         full_name = validated_data.pop("full_name", "")
         validated_data.pop("confirm_password", None)
         user = User.objects.create_user(**validated_data)
-        Profile.objects.create(
-            user=user, full_name=full_name, daily_study_hours=2
-        )
+        profile, _ = Profile.objects.get_or_create(user=user)
+        profile.full_name = full_name
+        profile.daily_study_hours = 2
+        profile.save(update_fields=["full_name", "daily_study_hours", "updated_at"])
         return user
 
 
@@ -52,7 +53,42 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username", read_only=True)
     email = serializers.EmailField(source="user.email", read_only=True)
+    user_id = serializers.IntegerField(source="user.id", read_only=True)
+    joined_at = serializers.DateTimeField(source="user.date_joined", read_only=True)
 
     class Meta:
         model = Profile
-        fields = ["id", "username", "email", "full_name", "daily_study_hours", "target_exam"]
+        fields = [
+            "id",
+            "user_id",
+            "username",
+            "email",
+            "joined_at",
+            "full_name",
+            "avatar",
+            "bio",
+            "location",
+            "phone",
+            "date_of_birth",
+            "gender",
+            "timezone",
+            "language",
+            "github",
+            "linkedin",
+            "portfolio",
+            "experience_level",
+            "years_of_experience",
+            "primary_skills",
+            "secondary_skills",
+            "preferred_role",
+            "tech_stack",
+            "resume",
+            "current_company",
+            "preferred_job_type",
+            "career_goal",
+            "daily_study_hours",
+            "target_exam",
+            "updated_at",
+            "created_at",
+        ]
+        read_only_fields = ["id", "user_id", "username", "email", "joined_at", "created_at", "updated_at"]

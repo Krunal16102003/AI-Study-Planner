@@ -1,8 +1,15 @@
 import axios from "axios";
 
-const BASE_URL =
-  import.meta.env.VITE_API_URL?.replace(/\/$/, "") ||
-  "http://127.0.0.1:8000/api";
+function normalizeApiBaseUrl(value) {
+  const trimmed = (value || "http://localhost:8000").trim().replace(/\/+$/, "");
+  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
+}
+
+const BASE_URL = normalizeApiBaseUrl(
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:8000"
+);
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -16,8 +23,24 @@ export const api = axios.create({
 const RETRYABLE_METHODS = new Set(["get", "head", "options"]);
 
 export function getApiErrorMessage(error, fallback = "Something went wrong. Please try again.") {
-  if (error.code === "ECONNABORTED") return "The request timed out. Please check the backend and try again.";
-  if (!error.response) return "Unable to reach the study engine. Please make sure the backend is running.";
+  const requestUrl = `${error.config?.baseURL || ""}${error.config?.url || ""}`;
+
+  if (requestUrl.startsWith("https://localhost") || requestUrl.startsWith("https://127.0.0.1")) {
+    return "Local Django only supports HTTP. Update the frontend API URL to http://localhost:8000 and restart the frontend server.";
+  }
+
+  if (error.code === "ECONNABORTED") {
+    return "The request timed out. Please check the backend and try again.";
+  }
+
+  if (!error.response) {
+    return "Server unavailable. Start Django on http://localhost:8000 and check that CORS allows your frontend origin.";
+  }
+
+  if (error.response.status === 401) return "Invalid username or password.";
+  if (error.response.status === 403) return "This request was blocked by the server. Check authentication and CORS settings.";
+  if (error.response.status === 404) return "Login endpoint not found. Confirm Django exposes /api/auth/token/.";
+  if (error.response.status >= 500) return "The backend hit an error. Check the Django terminal for details.";
 
   const data = error.response.data;
   if (typeof data === "string" && /<!doctype html|<html/i.test(data)) {
@@ -39,10 +62,6 @@ export function getApiErrorMessage(error, fallback = "Something went wrong. Plea
   return typeof data === "string" ? data : fallback;
 }
 
-/**
- * Updates the default Authorization header for the axios instance.
- * This is imported and used in main.jsx to keep the token in sync.
- */
 export function setAuthToken(token) {
   if (token) {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -51,9 +70,6 @@ export function setAuthToken(token) {
   }
 }
 
-// ── Request interceptor: always read the latest token on every request ──────
-// Fix: original code set the header once at module load time (stale token bug).
-// Now we read localStorage fresh on every request so refreshed tokens apply immediately.
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("access");
@@ -67,7 +83,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ── Response interceptor: silent token refresh on 401 ────────────────────────
 let isRefreshing = false;
 let refreshQueue = [];
 
@@ -144,7 +159,6 @@ api.interceptors.response.use(
     }
 
     error.userMessage = getApiErrorMessage(error);
-
     return Promise.reject(error);
   }
 );

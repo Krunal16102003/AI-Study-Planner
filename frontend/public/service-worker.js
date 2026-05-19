@@ -1,5 +1,16 @@
-const CACHE_NAME = "ai-study-planner-v1";
-const APP_SHELL = ["/", "/index.html", "/manifest.json", "/offline.html", "/icons/icon.svg"];
+const CACHE_NAME = "ai-study-planner-v2";
+const APP_SHELL = [
+  "/",
+  "/index.html",
+  "/manifest.json",
+  "/offline.html",
+  "/favicon.ico",
+  "/favicon.png",
+  "/apple-touch-icon.png",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/icons/icon.svg",
+];
 const API_CACHE = "ai-study-api-v1";
 
 self.addEventListener("install", (event) => {

@@ -7,21 +7,6 @@ import { api, getApiErrorMessage, setAuthToken } from "./services/api";
 import ErrorScreen from "./components/ErrorScreen";
 import FloatingAIAssistant from "./components/FloatingAIAssistant";
 import "./pwa";
-import {
-  AnalyticsLabPage,
-  BrainEnergyPage,
-  CareerSimulatorPage,
-  ExamWarRoomPage,
-  FocusArenaPage,
-  HabitLabPage,
-  KnowledgeMapPage,
-  MemoryVaultPage,
-  MentorRoomPage,
-  StudyClonePage,
-  StudyDnaPage,
-  StudyUniversePage,
-  TimeMachinePage,
-} from "./pages/AiOperatingSystemPages";
 import "./styles.css";
 
 const LandingPage = lazy(() => import("./components/LandingPage"));
@@ -31,8 +16,21 @@ const CareerRoadmapWorkspace = lazy(() => import("./components/career/CareerRoad
 const AIMockInterviewPage = lazy(() => import("./components/interview/AIMockInterviewPage"));
 const PlanningDashboard = lazy(() => import("./components/planning/PlanningDashboard"));
 const SmartScheduleGenerator = lazy(() => import("./components/planning/SmartScheduleGenerator"));
+const ProfilePage = lazy(() => import("./components/profile/ProfilePage"));
 const Resources = lazy(() => import("./components/Resources")); // Removed .jsx for consistency
 const ExamCommandCenter = lazy(() => import("./pages/ExamCommandCenter"));
+const AnalyticsLabPage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.AnalyticsLabPage })));
+const BrainEnergyPage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.BrainEnergyPage })));
+const CareerSimulatorPage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.CareerSimulatorPage })));
+const ExamWarRoomPage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.ExamWarRoomPage })));
+const FocusArenaPage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.FocusArenaPage })));
+const HabitLabPage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.HabitLabPage })));
+const KnowledgeMapPage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.KnowledgeMapPage })));
+const MemoryVaultPage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.MemoryVaultPage })));
+const StudyClonePage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.StudyClonePage })));
+const StudyDnaPage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.StudyDnaPage })));
+const StudyUniversePage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.StudyUniversePage })));
+const TimeMachinePage = lazy(() => import("./pages/AiOperatingSystemPages").then(module => ({ default: module.TimeMachinePage })));
 
 const SUBJECT_SUGGESTIONS = [
   "Mathematics", "Physics", "Chemistry", "Biology", "English",
@@ -122,7 +120,7 @@ const mobileNavItems = [
   { label: "Tasks", to: "/focus", icon: TimerReset },
   { label: "Notes", to: "/memory-vault", icon: FileText },
   { label: "AI", to: "/assistant", icon: Bot },
-  { label: "Profile", to: "/analytics", icon: UserCircle },
+  { label: "Profile", to: "/dashboard/profile", icon: UserCircle },
 ];
 
 function SparkIcon(props) {
@@ -455,6 +453,7 @@ function Shell({ auth }) {
     "/knowledge-map": { title: "Knowledge Map", sub: "Interactive topic graph for mastery, weak clusters, and AI-discovered relationships." },
     "/mentor-room": { title: "AI Mentor Room", sub: "Premium coaching, motivation, strategy feedback, and conversational guidance." },
     "/career-roadmap": { title: "Career & Skill Roadmap", sub: "AI career planning, skill gaps, projects, readiness scoring, and interview preparation." },
+    "/dashboard/profile": { title: "Developer Profile", sub: "Personal profile, skills matrix, AI career insights, and workspace settings." },
     "/focus-arena": { title: "Focus Arena", sub: "Competitive deep-work rooms, rankings, timers, and productivity challenges." },
     "/memory-vault": { title: "Memory Vault", sub: "Spaced repetition, forgetting curves, heatmaps, and retention intelligence." },
     "/study-universe": { title: "Study Universe", sub: "A cosmic mastery system where subjects become planets and achievements unlock progress." },
@@ -471,6 +470,7 @@ function Shell({ auth }) {
     return group?.label || null;
   }, [location.pathname]);
   const [openGroup, setOpenGroup] = useState(activeGroup || "Planner");
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     if (activeGroup) setOpenGroup(activeGroup);
@@ -538,57 +538,18 @@ function Shell({ auth }) {
           unreadCount={unreadCount}
           onNotifications={() => setNotificationOpen(value => !value)}
         />
-        <header className="dashboard-topbar">
-          <div className="topbar-title">
-            <button className="topbar-icon mobile-only" onClick={() => setMobileOpen(true)} aria-label="Open navigation">
-              <Menu size={18} />
-            </button>
-            <div>
-              <p>Workspace / {current.title}</p>
-              <h1>{current.title}</h1>
-              <span>{current.sub}</span>
-            </div>
-          </div>
-          <div className="topbar-actions">
-            <label className="topbar-search">
-              <Search size={18} />
-              <input placeholder="Search plans, subjects, resources..." />
-            </label>
-            <button className="topbar-pill"><CalendarDays size={16} /> Today</button>
-            <div className="notification-anchor">
-              <button className="topbar-icon notification-button" onClick={() => setNotificationOpen(value => !value)} aria-label="Notifications">
-                <Bell size={18} />
-                {unreadCount > 0 && <span>{unreadCount}</span>}
-              </button>
-              <AnimatePresence>
-                {notificationOpen && (
-                  <motion.div className="notification-popover" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}>
-                    <div className="notification-popover__top">
-                      <strong>Notifications</strong>
-                      <button type="button" className="secondary" onClick={generateSmartNotifications}>Refresh</button>
-                    </div>
-                    <div className="notification-list">
-                      {notifications.slice(0, 6).map(item => (
-                        <article key={item.id} className={item.is_read ? "is-read" : ""}>
-                          <strong>{item.title}</strong>
-                          <p>{item.message}</p>
-                        </article>
-                      ))}
-                      {!notifications.length && <p className="empty">No reminders yet. Generate smart notifications after adding exams or weak topics.</p>}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-            <button className="topbar-icon" onClick={auth.toggleTheme} aria-label="Toggle theme">
-              {auth.theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-            </button>
-            <div className="topbar-profile">
-              <UserCircle size={20} />
-              <span>{auth.username || "Student"}</span>
-            </div>
-          </div>
-        </header>
+        <PremiumDashboardHeader
+          auth={auth}
+          current={current}
+          unreadCount={unreadCount}
+          notifications={notifications}
+          notificationOpen={notificationOpen}
+          profileOpen={profileOpen}
+          setNotificationOpen={setNotificationOpen}
+          setProfileOpen={setProfileOpen}
+          generateSmartNotifications={generateSmartNotifications}
+          onMobileMenu={() => setMobileOpen(true)}
+        />
         <main className="main dashboard-main">
           <Routes>
             <Route path="/"          element={<LazyPage><PlanningDashboard /></LazyPage>} />
@@ -605,20 +566,21 @@ function Shell({ auth }) {
             <Route path="/focus"     element={<LazyPage><FocusModePage /></LazyPage>} />
             <Route path="/pomodoro"  element={<LazyPage><FocusModePage /></LazyPage>} />
             <Route path="/exam-command" element={<LazyPage><ExamCommandCenter /></LazyPage>} />
-            <Route path="/study-dna"        element={<StudyDnaPage />} />
-            <Route path="/time-machine"     element={<TimeMachinePage />} />
-            <Route path="/brain-energy"     element={<BrainEnergyPage />} />
-            <Route path="/knowledge-map"    element={<KnowledgeMapPage />} />
+            <Route path="/study-dna"        element={<LazyPage><StudyDnaPage /></LazyPage>} />
+            <Route path="/time-machine"     element={<LazyPage><TimeMachinePage /></LazyPage>} />
+            <Route path="/brain-energy"     element={<LazyPage><BrainEnergyPage /></LazyPage>} />
+            <Route path="/knowledge-map"    element={<LazyPage><KnowledgeMapPage /></LazyPage>} />
             <Route path="/mentor-room"      element={<LazyPage><MentorRoomWorkspace /></LazyPage>} />
             <Route path="/career-roadmap"   element={<LazyPage><CareerRoadmapWorkspace /></LazyPage>} />
-            <Route path="/focus-arena"      element={<FocusArenaPage />} />
-            <Route path="/memory-vault"     element={<MemoryVaultPage />} />
-            <Route path="/study-universe"   element={<StudyUniversePage />} />
-            <Route path="/habit-lab"        element={<HabitLabPage />} />
-            <Route path="/exam-war-room"    element={<ExamWarRoomPage />} />
-            <Route path="/career-simulator" element={<CareerSimulatorPage />} />
-            <Route path="/analytics-lab"    element={<AnalyticsLabPage />} />
-            <Route path="/study-clone"      element={<StudyClonePage />} />
+            <Route path="/dashboard/profile" element={<LazyPage><ProfilePage auth={auth} /></LazyPage>} />
+            <Route path="/focus-arena"      element={<LazyPage><FocusArenaPage /></LazyPage>} />
+            <Route path="/memory-vault"     element={<LazyPage><MemoryVaultPage /></LazyPage>} />
+            <Route path="/study-universe"   element={<LazyPage><StudyUniversePage /></LazyPage>} />
+            <Route path="/habit-lab"        element={<LazyPage><HabitLabPage /></LazyPage>} />
+            <Route path="/exam-war-room"    element={<LazyPage><ExamWarRoomPage /></LazyPage>} />
+            <Route path="/career-simulator" element={<LazyPage><CareerSimulatorPage /></LazyPage>} />
+            <Route path="/analytics-lab"    element={<LazyPage><AnalyticsLabPage /></LazyPage>} />
+            <Route path="/study-clone"      element={<LazyPage><StudyClonePage /></LazyPage>} />
           </Routes>
         </main>
         <footer className="workspace-footer">
@@ -636,6 +598,159 @@ function Shell({ auth }) {
 }
 
 // ── Lazy page wrapper with timeout ────────────────────────────────────────────
+
+function PremiumDashboardHeader({
+  auth,
+  current,
+  unreadCount,
+  notifications,
+  notificationOpen,
+  profileOpen,
+  setNotificationOpen,
+  setProfileOpen,
+  generateSmartNotifications,
+  onMobileMenu,
+}) {
+  const navigate = useNavigate();
+  const userName = auth.username || "Krunal";
+  const initials = userName.slice(0, 1).toUpperCase();
+
+  function go(path) {
+    setProfileOpen(false);
+    navigate(path);
+  }
+
+  function openTodayPlan() {
+    const today = new Date().toISOString().slice(0, 10);
+    navigate(`/planner?date=${today}`);
+  }
+
+  return (
+    <motion.header
+      className="dashboard-topbar premium-dashboard-header"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.28, ease: "easeOut" }}
+    >
+      <div className="premium-header-left">
+        <button className="topbar-icon mobile-only" onClick={onMobileMenu} aria-label="Open navigation">
+          <Menu size={18} />
+        </button>
+        <div className="premium-workspace-mark" aria-hidden="true">
+          <BriefcaseBusiness size={22} />
+        </div>
+        <div className="topbar-title premium-header-copy">
+          <h1>{current.title}</h1>
+        </div>
+      </div>
+
+      <div className="premium-header-center">
+        <label className="topbar-search premium-command-search">
+          <Search size={19} />
+          <input placeholder="Search plans, skills, resources..." aria-label="Search plans, skills, resources" />
+          <kbd>⌘K</kbd>
+        </label>
+      </div>
+
+      <div className="topbar-actions premium-header-actions">
+        <motion.button type="button" className="topbar-pill premium-today-button" onClick={openTodayPlan} title="Open today's planner" whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+          <CalendarDays size={16} /> Today
+        </motion.button>
+
+        <div className="notification-anchor">
+          <motion.button
+            type="button"
+            className="topbar-icon notification-button premium-action-button"
+            onClick={() => setNotificationOpen(value => !value)}
+            aria-label="Notifications"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.96 }}
+          >
+            <Bell size={18} />
+            {unreadCount > 0 && <span className="premium-unread-badge">{unreadCount}</span>}
+          </motion.button>
+          <AnimatePresence>
+            {notificationOpen && (
+              <motion.div
+                className="notification-popover premium-popover"
+                initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                transition={{ duration: 0.18 }}
+              >
+                <div className="notification-popover__top">
+                  <strong>Notifications</strong>
+                  <button type="button" className="secondary" onClick={generateSmartNotifications}>Refresh</button>
+                </div>
+                <div className="notification-list">
+                  {notifications.slice(0, 6).map(item => (
+                    <article key={item.id} className={item.is_read ? "is-read" : ""}>
+                      <strong>{item.title}</strong>
+                      <p>{item.message}</p>
+                    </article>
+                  ))}
+                  {!notifications.length && <p className="empty">No reminders yet. Generate smart notifications after adding exams or weak topics.</p>}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <motion.button
+          type="button"
+          className="topbar-icon premium-action-button"
+          onClick={auth.toggleTheme}
+          aria-label="Toggle theme"
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.96 }}
+        >
+          {auth.theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+        </motion.button>
+
+        <div className="premium-profile-anchor">
+          <motion.button
+            type="button"
+            className="topbar-profile premium-profile-button"
+            onClick={() => setProfileOpen(value => !value)}
+            aria-expanded={profileOpen}
+            aria-haspopup="menu"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <span className="premium-profile-avatar">{initials}</span>
+            <span>{userName}</span>
+            <ChevronDown size={16} />
+          </motion.button>
+          <AnimatePresence>
+            {profileOpen && (
+              <motion.div
+                className="premium-profile-menu"
+                role="menu"
+                initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                transition={{ duration: 0.18 }}
+              >
+                <div className="premium-profile-menu__user">
+                  <span className="premium-profile-avatar premium-profile-avatar--large">{initials}</span>
+                  <div>
+                    <strong>{userName}</strong>
+                    <small>Full Stack Developer</small>
+                  </div>
+                </div>
+                <button type="button" role="menuitem" onClick={() => go("/dashboard/profile")}><UserCircle size={17} /> My Profile</button>
+                <button type="button" role="menuitem" onClick={() => go("/career-roadmap")}><Gauge size={17} /> Career Progress</button>
+                <button type="button" role="menuitem" onClick={() => go("/analytics-lab")}><BarChart3 size={17} /> Skills Analytics</button>
+                <button type="button" role="menuitem" onClick={() => go("/dashboard/profile#settings")}><Settings size={17} /> Settings</button>
+                <button type="button" role="menuitem" className="is-danger" onClick={auth.logout}><LogOut size={17} /> Logout</button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </motion.header>
+  );
+}
 
 function MobileHeader({ auth, current, unreadCount, onNotifications }) {
   return (
@@ -962,6 +1077,16 @@ function AuthPage({ mode, auth }) {
   async function submit(event) {
     event.preventDefault();
     setError("");
+    const username = form.username.trim();
+    const password = form.password;
+    const email = form.email.trim();
+    const fullName = form.full_name.trim();
+
+    if (!username || !password) {
+      setError("Enter your username and password.");
+      return;
+    }
+
     if (mode === "register") {
       if (form.password !== form.confirm_password) {
         setError("Passwords do not match.");
@@ -976,31 +1101,18 @@ function AuthPage({ mode, auth }) {
     try {
       if (mode === "register") {
         await api.post("/auth/register/", {
-          username: form.username,
-          email: form.email,
-          full_name: form.full_name,
-          password: form.password,
+          username,
+          email,
+          full_name: fullName,
+          password,
           confirm_password: form.confirm_password,
         });
       }
-      const { data } = await api.post("/auth/token/", { username: form.username, password: form.password });
-      auth.login(data.access, data.refresh, form.username);
+      const { data } = await api.post("/auth/token/", { username, password });
+      auth.login(data.access, data.refresh, username);
       navigate("/");
     } catch (err) {
-      const status = err.response?.status;
-      const data = err.response?.data;
-
-      if (status === 401) {
-        setError("Login failed: You entered a wrong password or username.");
-      } else if (status === 404) {
-        setError("Login failed: This user does not exist.");
-      } else if (data && typeof data === "object") {
-        // Handle field-specific errors from Django (e.g., username already exists)
-        const firstError = Object.values(data)[0];
-        setError(Array.isArray(firstError) ? firstError[0] : JSON.stringify(firstError));
-      } else {
-        setError(err.message || "An unexpected error occurred. Please try again.");
-      }
+      setError(formatApiError(err, mode === "register" ? "Could not create your account." : "Could not sign in."));
 
       console.error("Auth error:", err.response || err);
     } finally {
@@ -1104,7 +1216,7 @@ function ForgotPasswordPage() {
       <form className="panel auth-panel" onSubmit={submit}>
         <span className="auth-kicker">Account recovery</span>
         <h1>Reset password</h1>
-        <p>Enter your account email. In development, the reset link is shown here after verification.</p>
+        <p>Enter your account email. If the account exists, reset instructions will be prepared.</p>
         <input required type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} />
         <button disabled={loading}>{loading && <Loader2 size={18} className="spin-icon" />} {loading ? "Preparing..." : "Prepare reset link"}</button>
         {feedback && <p className={`auth-alert auth-alert--${feedback.type}`}>{feedback.text}</p>}
@@ -1318,6 +1430,7 @@ function Planner() {
   const [plan, setPlan] = useState(null);
   const [days, setDays] = useState(7);
   const [hours, setHours] = useState(2);
+  const [message, setMessage] = useState("");
   const sessionsByDate = useMemo(() => {
     return (plan?.sessions || []).reduce((acc, session) => {
       acc[session.date] = [...(acc[session.date] || []), session];
@@ -1326,11 +1439,12 @@ function Planner() {
   }, [plan]);
 
   async function generate() {
+    setMessage("");
     try {
       const { data } = await api.post("/study-plans/generate/", { days, daily_hours: hours });
       setPlan(data);
     } catch (err) {
-      alert("Failed to generate plan. Please check your connection.");
+      setMessage(formatApiError(err, "Failed to generate plan. Please check your connection."));
     }
   }
 
@@ -1341,6 +1455,7 @@ function Planner() {
         <label>Daily hours<input type="number" min="1" max="12" step="0.5" value={hours} onChange={e => setHours(e.target.value)} /></label>
         <button onClick={generate}><CalendarDays size={18} /> Generate Timetable</button>
       </div>
+      {message && <p className="error">{message}</p>}
       {plan
         ? Object.entries(sessionsByDate).map(([date, sessions]) => (
           <section className="panel day" key={date}>
@@ -2190,6 +2305,7 @@ function FocusMode() {
   const [interruptions, setInterruptions] = useState(0);
   const [startedAt, setStartedAt]       = useState(null);
   const [aiRecommendation, setAiRecommendation] = useState(null);
+  const [message, setMessage] = useState("");
 
   const loadMetadata = useCallback(async () => {
     try {
@@ -2231,9 +2347,10 @@ function FocusMode() {
       setRunning(false);
       setInterruptions(0);
       setStartedAt(null);
+      setMessage("Focus session saved.");
       loadMetadata();
     } catch (err) {
-      alert("Could not save session.");
+      setMessage(formatApiError(err, "Could not save session."));
     }
   }
 
@@ -2251,6 +2368,7 @@ function FocusMode() {
       <section className="panel timer">
         <div>{display}</div>
         {summary && <p className="success">Last Score: {summary.focus_score}% — {aiRecommendation?.reason || summary.recommendation}</p>}
+        {message && <p className={isErrorMessage(message) ? "error" : "success"}>{message}</p>}
         <div className="row">
           <button onClick={running ? () => setRunning(false) : start}>{running ? "Pause" : "Start Focus"}</button>
           <button className="secondary" onClick={() => setInterruptions(v => v + 1)}>Log Interruption ({interruptions})</button>

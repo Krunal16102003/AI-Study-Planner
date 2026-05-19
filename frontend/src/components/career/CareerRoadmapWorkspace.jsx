@@ -19,6 +19,12 @@ const DEFAULT_FORM = {
   preferred_technologies: "React, JavaScript, APIs",
 };
 
+const INTERVIEW_QUESTIONS = {
+  technical: career => `Explain one ${career} project you built and the technical decisions that made it reliable.`,
+  coding: career => `Walk through how you would solve a practical coding problem for a ${career} role, including edge cases and complexity.`,
+  behavioral: career => `Tell me about a time you improved after feedback and how it prepares you for a ${career} role.`,
+};
+
 function scoreLabel(value) {
   if (value >= 80) return "Role ready";
   if (value >= 60) return "Getting close";
@@ -110,6 +116,15 @@ export default function CareerRoadmapWorkspace() {
     } finally {
       setEvaluating(false);
     }
+  }
+
+  function updateInterviewType(type) {
+    setInterview(current => ({
+      ...current,
+      interview_type: type,
+      question: INTERVIEW_QUESTIONS[type]?.(form.target_career) || current.question,
+      answer: "",
+    }));
   }
 
   if (loading) {
@@ -296,7 +311,7 @@ export default function CareerRoadmapWorkspace() {
                     <span className="eyebrow">Interview mode</span>
                     <h2>AI Mock Interview</h2>
                   </div>
-                  <select value={interview.interview_type} onChange={event => setInterview({ ...interview, interview_type: event.target.value })}>
+                  <select value={interview.interview_type} onChange={event => updateInterviewType(event.target.value)}>
                     <option value="technical">Technical round</option>
                     <option value="coding">Coding round</option>
                     <option value="behavioral">Behavioral round</option>
