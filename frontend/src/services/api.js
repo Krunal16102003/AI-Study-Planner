@@ -110,6 +110,8 @@ api.interceptors.response.use(
       const refreshToken = localStorage.getItem("refresh");
       if (!refreshToken) {
         localStorage.removeItem("access");
+        setAuthToken(null);
+        window.dispatchEvent(new Event("auth-expired"));
         return Promise.reject(error);
       }
 

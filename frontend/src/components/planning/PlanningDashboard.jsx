@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Download, FileSpreadsheet, Plus, Search } from "lucide-react";
+import { Brain, CalendarDays, Clock, Download, FileSpreadsheet, Flame, Gauge, Plus, Search, ShieldCheck, Sparkles } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import { api } from "../../services/api";
 import CalendarView from "./CalendarView";
+import AIStudyOperatingSystem from "./AIStudyOperatingSystem";
 import DailyRecommendationPanel from "./DailyRecommendationPanel";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import ErrorScreen from "../ErrorScreen";
@@ -59,6 +61,8 @@ function recommendationFor(plan, completion, priority) {
 }
 
 export default function PlanningDashboard() {
+  const [searchParams] = useSearchParams();
+  const routeSearch = searchParams.get("search") || "";
   const [plans, setPlans] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [dashboard, setDashboard] = useState(null);
@@ -74,7 +78,7 @@ export default function PlanningDashboard() {
   const [page, setPage] = useState(1);
   const [draggedSession, setDraggedSession] = useState(null);
   const [filters, setFilters] = useState({
-    search: "",
+    search: routeSearch,
     priority: "all",
     status: "all",
     exam: "all",
@@ -131,6 +135,11 @@ export default function PlanningDashboard() {
   }, [load]);
 
   useEffect(() => {
+    setFilters(current => current.search === routeSearch ? current : { ...current, search: routeSearch });
+    setPage(1);
+  }, [routeSearch]);
+
+  useEffect(() => {
     if (message && !message.toLowerCase().includes("error") && !message.toLowerCase().includes("could not")) {
       const timer = setTimeout(() => setMessage(""), 5000); // Clear success messages after 5s
       return () => clearTimeout(timer);
@@ -171,7 +180,17 @@ export default function PlanningDashboard() {
   const filteredPlans = useMemo(() => {
     const search = filters.search.trim().toLowerCase();
     const rows = enrichedPlans.filter(plan => {
-      const matchesSearch = !search || [plan.title, plan.subjects, plan.weakTopicSummary].filter(Boolean).join(" ").toLowerCase().includes(search);
+      const searchableText = [
+        plan.title,
+        plan.subjects,
+        plan.weakTopicSummary,
+        plan.nextExam,
+        plan.priorityLabel,
+        plan.status,
+        plan.revisionStatus,
+        plan.recommendation,
+      ].filter(Boolean).join(" ").toLowerCase();
+      const matchesSearch = !search || searchableText.includes(search);
       const matchesPriority = filters.priority === "all" || plan.priority === filters.priority;
       const matchesStatus = filters.status === "all" || plan.statusKey === filters.status;
       const examDays = daysUntil(plan.nextExam);
@@ -214,6 +233,9 @@ export default function PlanningDashboard() {
     doneHours: Math.min(summary.dailyTarget, Number((dashboard?.total_study_hours || 0).toFixed(1))),
     completed: Math.min(100, ((dashboard?.total_study_hours || 0) / Math.max(summary.dailyTarget, 1) * 100)).toFixed(1),
   };
+  const username = localStorage.getItem("username") || "Krunal";
+  const nextFocusPlan = enrichedPlans.find(plan => plan.statusKey !== "completed") || enrichedPlans[0];
+  const todayLabel = new Intl.DateTimeFormat("en", { weekday: "short", month: "short", day: "numeric" }).format(new Date());
 
   function changeSort(key) {
     setSort(current => ({
@@ -356,25 +378,57 @@ export default function PlanningDashboard() {
   }
 
   return (
-    <div className="planning-page">
-      <div className="planning-header__actions dashboard-action-row">
-        <button type="button" className="secondary" onClick={exportPdf}><Download size={18} /> PDF</button>
-        <button type="button" className="secondary" onClick={exportCsv}><FileSpreadsheet size={18} /> Excel</button>
-        <button type="button" onClick={openCreate}><Plus size={18} /> Add New Plan</button>
-      </div>
+    <div className="planning-page ai-study-dashboard">
+      <section className="ai-dashboard-hero">
+        <div className="ai-dashboard-hero__copy">
+          <span className="ai-dashboard-eyebrow"><Sparkles size={14} /> AI Study Operating System</span>
+          <h2>Good afternoon, {username} <span aria-hidden="true">{"\u{1F44B}"}</span></h2>
+          <p>Keep today focused: review weak topics, protect deep-work blocks, and move your highest-priority plan forward.</p>
+          <div className="ai-dashboard-chips">
+            <span><Clock size={14} /> {dailyTarget.doneHours}h logged</span>
+            <span><Gauge size={14} /> {summary.averageProgress}% avg progress</span>
+            <span><Flame size={14} /> {summary.completedSessions} sessions</span>
+          </div>
+        </div>
+        <div className="ai-dashboard-focus">
+          <div>
+            <span>Today's focus</span>
+            <strong>{nextFocusPlan?.subjects || nextFocusPlan?.title || "Mathematics"}</strong>
+            <p>{nextFocusPlan?.recommendation || "Start with a 45-minute focused study block and finish with active recall."}</p>
+          </div>
+          <div className="ai-dashboard-date">
+            <CalendarDays size={18} />
+            <strong>{todayLabel}</strong>
+            <span>{dailyTarget.completed}% target</span>
+          </div>
+        </div>
+        <div className="ai-dashboard-actions">
+          <button type="button" className="secondary" onClick={exportPdf}><Download size={17} /> PDF</button>
+          <button type="button" className="secondary" onClick={exportCsv}><FileSpreadsheet size={17} /> Excel</button>
+          <button type="button" onClick={openCreate}><Plus size={17} /> Add Plan</button>
+        </div>
+      </section>
       
       {message && <p className="planning-message success">{message}</p>}
 
-      <DailyRecommendationPanel username={localStorage.getItem("username") || "Student"} />
-      
-      {summary.totalPlans === 0 && !loading ? (
-        <OnboardingAnalytics />
-      ) : (
-        <StudyAnalytics summary={summary} analytics={analytics} loading={loading || insightsLoading} />
-      )}
+      <section className="ai-dashboard-workspace">
+        <div className="ai-dashboard-center">
+          <DailyRecommendationPanel username={username || "Student"} />
+          
+          {summary.totalPlans === 0 && !loading ? (
+            <OnboardingAnalytics />
+          ) : (
+            <StudyAnalytics summary={summary} analytics={analytics} loading={loading || insightsLoading} />
+          )}
 
-      <section className="planning-layout">
-        <div className="planning-main">
+          <AIStudyOperatingSystem
+            plans={enrichedPlans}
+            subjects={subjects}
+            summary={summary}
+            analytics={analytics || {}}
+            dashboard={dashboard}
+          />
+
           <section className="panel planning-controls">
             <label className="planning-search">
               <Search size={18} />

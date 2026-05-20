@@ -138,27 +138,31 @@ export default function PlanTable({ plans, sort, onSort, onEdit, onDelete, onSta
               </div>
 
               <div className="modern-plan-actions" data-label="Quick Actions">
-                <motion.button type="button" className="modern-action modern-action--primary" whileTap={{ scale: 0.96 }} onClick={() => onStart(plan)}>
-                  <Play size={15} />
-                  <span>Start</span>
-                </motion.button>
-                <motion.button type="button" className="modern-action" whileTap={{ scale: 0.96 }} onClick={() => onComplete(plan)}>
-                  <CheckCircle2 size={15} />
-                  <span>Done</span>
-                </motion.button>
-                <motion.button type="button" className="modern-action" whileTap={{ scale: 0.96 }} onClick={() => onQuiz(plan)}>
-                  <Sparkles size={15} />
-                  <span>Quiz</span>
-                </motion.button>
-                <motion.button type="button" className="modern-action modern-action--icon" whileTap={{ scale: 0.96 }} aria-label="Edit plan" onClick={() => onEdit(plan)}>
-                  <Edit3 size={15} />
-                </motion.button>
-                <motion.button type="button" className="modern-action modern-action--icon" whileTap={{ scale: 0.96 }} aria-label="Generate revision plan" onClick={() => onRevision(plan)}>
-                  <RefreshCcw size={15} />
-                </motion.button>
-                <motion.button type="button" className="modern-action modern-action--icon" whileTap={{ scale: 0.96 }} aria-label="More actions" onClick={() => onDelete(plan)}>
-                  <MoreHorizontal size={16} />
-                </motion.button>
+                <div className="modern-action-group modern-action-group--primary">
+                  <motion.button type="button" className="modern-action modern-action--primary" whileTap={{ scale: 0.96 }} onClick={() => onStart(plan)}>
+                    <Play size={15} />
+                    <span>Start</span>
+                  </motion.button>
+                  <motion.button type="button" className="modern-action" whileTap={{ scale: 0.96 }} onClick={() => onComplete(plan)}>
+                    <CheckCircle2 size={15} />
+                    <span>Done</span>
+                  </motion.button>
+                  <motion.button type="button" className="modern-action" whileTap={{ scale: 0.96 }} onClick={() => onQuiz(plan)}>
+                    <Sparkles size={15} />
+                    <span>Quiz</span>
+                  </motion.button>
+                </div>
+                <div className="modern-action-group modern-action-group--icons">
+                  <motion.button type="button" className="modern-action modern-action--icon" whileTap={{ scale: 0.96 }} aria-label="Edit plan" onClick={() => onEdit(plan)}>
+                    <Edit3 size={15} />
+                  </motion.button>
+                  <motion.button type="button" className="modern-action modern-action--icon" whileTap={{ scale: 0.96 }} aria-label="Generate revision plan" onClick={() => onRevision(plan)}>
+                    <RefreshCcw size={15} />
+                  </motion.button>
+                  <motion.button type="button" className="modern-action modern-action--icon" whileTap={{ scale: 0.96 }} aria-label="More actions" onClick={() => onDelete(plan)}>
+                    <MoreHorizontal size={16} />
+                  </motion.button>
+                </div>
               </div>
             </motion.article>
           );

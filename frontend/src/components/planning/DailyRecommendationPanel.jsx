@@ -63,7 +63,7 @@ export default function DailyRecommendationPanel({ username = "Student" }) {
       <div className="daily-ai-heading">
         <div>
           <span className="eyebrow"><Sparkles size={14} /> Daily AI plan</span>
-          <h2>{greeting}, {username || "Student"}</h2>
+          <h2>{recommendation?.title || "Today's study plan"}</h2>
         </div>
         <button type="button" className="secondary" onClick={() => load("post")}><RefreshCw size={16} /> Regenerate</button>
       </div>

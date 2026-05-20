@@ -24,7 +24,7 @@ export default function NotificationPanel({ exams, alerts, dailyTarget, onGenera
           <TimerReset size={20} />
           <h2>Daily Target</h2>
         </div>
-        <div className="planning-target-ring">
+        <div className="planning-target-ring" style={{ "--target": dailyTarget.completed }}>
           <strong>{dailyTarget.completed}%</strong>
           <span>{dailyTarget.doneHours}h of {dailyTarget.targetHours}h completed today</span>
         </div>

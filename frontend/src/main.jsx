@@ -202,7 +202,12 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
-    function expireSession() { setToken(null); }
+    function expireSession() {
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      setToken(null);
+      setStartupState({ status: "logged_out" });
+    }
     window.addEventListener("auth-expired", expireSession);
     return () => window.removeEventListener("auth-expired", expireSession);
   }, []);
@@ -478,19 +483,29 @@ function Shell({ auth }) {
   }, [activeGroup, location.pathname]);
 
   const loadNotifications = useCallback(async () => {
+    if (!auth.token) {
+      setNotifications([]);
+      return;
+    }
+
     try {
       const { data } = await api.get("/notifications/");
       setNotifications(Array.isArray(data) ? data : data.results || []);
     } catch (err) {
       console.warn("Notifications unavailable", err);
     }
-  }, []);
+  }, [auth.token]);
 
   useEffect(() => {
+    if (!auth.token) {
+      setNotifications([]);
+      return undefined;
+    }
+
     loadNotifications();
     const id = setInterval(loadNotifications, 60000);
     return () => clearInterval(id);
-  }, [loadNotifications]);
+  }, [auth.token, loadNotifications]);
 
   async function generateSmartNotifications() {
     try {
@@ -612,8 +627,39 @@ function PremiumDashboardHeader({
   onMobileMenu,
 }) {
   const navigate = useNavigate();
+  const searchInputRef = useRef(null);
+  const [query, setQuery] = useState("");
   const userName = auth.username || "Krunal";
   const initials = userName.slice(0, 1).toUpperCase();
+  const searchItems = useMemo(() => {
+    const primary = [
+      { label: "Dashboard", path: "/", keywords: "home planning overview" },
+      { label: "Smart Planner", path: "/planner", keywords: "plans schedule timetable study" },
+      { label: "Career Roadmap", path: "/career-roadmap", keywords: "skills career projects interview" },
+      { label: "AI Assistant", path: "/assistant", keywords: "chat mentor ai help" },
+      { label: "Profile", path: "/dashboard/profile", keywords: "account settings user" },
+    ];
+    const fromNav = navGroups.flatMap(group => group.items || (group.to ? [group] : []))
+      .filter(item => item.to)
+      .map(item => ({ label: item.label, path: item.to, keywords: item.label.toLowerCase() }));
+    return [...primary, ...fromNav].filter((item, index, list) => list.findIndex(other => other.path === item.path) === index);
+  }, []);
+  const searchResults = useMemo(() => {
+    const text = query.trim().toLowerCase();
+    if (!text) return [];
+    return searchItems.filter(item => `${item.label} ${item.keywords}`.toLowerCase().includes(text)).slice(0, 6);
+  }, [query, searchItems]);
+
+  useEffect(() => {
+    function handleShortcut(event) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, []);
 
   function go(path) {
     setProfileOpen(false);
@@ -623,6 +669,17 @@ function PremiumDashboardHeader({
   function openTodayPlan() {
     const today = new Date().toISOString().slice(0, 10);
     navigate(`/planner?date=${today}`);
+  }
+
+  function submitSearch(event) {
+    event.preventDefault();
+    if (searchResults[0]) {
+      navigate(searchResults[0].path);
+      setQuery("");
+      return;
+    }
+    const text = query.trim();
+    if (text) navigate(`/planner?search=${encodeURIComponent(text)}`);
   }
 
   return (
@@ -645,11 +702,39 @@ function PremiumDashboardHeader({
       </div>
 
       <div className="premium-header-center">
-        <label className="topbar-search premium-command-search">
+        <form className="topbar-search premium-command-search" onSubmit={submitSearch}>
           <Search size={19} />
-          <input placeholder="Search plans, skills, resources..." aria-label="Search plans, skills, resources" />
+          <input
+            ref={searchInputRef}
+            value={query}
+            onChange={event => setQuery(event.target.value)}
+            placeholder="Search plans, skills, resources..."
+            aria-label="Search plans, skills, resources"
+          />
           <kbd>⌘K</kbd>
-        </label>
+          {query.trim() && (
+            <div className="premium-search-results" role="listbox" aria-label="Search results">
+              {searchResults.length ? searchResults.map(item => (
+                <button
+                  type="button"
+                  key={item.path}
+                  onClick={() => {
+                    navigate(item.path);
+                    setQuery("");
+                  }}
+                >
+                  <Search size={14} />
+                  <span>{item.label}</span>
+                </button>
+              )) : (
+                <button type="submit">
+                  <Search size={14} />
+                  <span>Search plans for "{query.trim()}"</span>
+                </button>
+              )}
+            </div>
+          )}
+        </form>
       </div>
 
       <div className="topbar-actions premium-header-actions">

@@ -17,16 +17,16 @@ import { api } from "../services/api";
 
 const welcomeMessage = {
   role: "assistant",
-  text: "Hi there.\nI'm your AI Study Assistant.\nHow can I help you today?",
+  text: "Hi there.\nI'm your AI Study Copilot.\nI can plan your day, recover weak topics, predict exam readiness, and turn notes into recall assets.",
 };
 
 const suggestions = [
-  { label: "Create a Study Plan", icon: CalendarDays, prompt: "Create a study plan for my upcoming exam." },
-  { label: "Recommend Topics", icon: BookOpen, prompt: "Recommend the most important topics I should study next." },
-  { label: "Time Management Tips", icon: Clock3, prompt: "Give me time management tips for studying better today." },
-  { label: "Quiz Me", icon: Brain, prompt: "Quiz me on a difficult topic." },
-  { label: "Generate Revision Schedule", icon: Sparkles, prompt: "Generate a revision schedule for this week." },
-  { label: "Explain Difficult Topic", icon: WandSparkles, prompt: "Explain a difficult topic in simple terms." },
+  { label: "Daily AI Plan", icon: CalendarDays, prompt: "Analyze my weak topics and create the best daily study plan for today." },
+  { label: "Revise Now Queue", icon: BookOpen, prompt: "Build a spaced repetition revise-now queue from my weakest topics." },
+  { label: "Burnout Check", icon: Clock3, prompt: "Predict my burnout risk and adjust today's workload." },
+  { label: "Exam Predictor", icon: Brain, prompt: "Estimate my exam readiness and predicted score by subject." },
+  { label: "Generate Notes", icon: Sparkles, prompt: "Generate summary notes, flashcards, and a quiz for my current chapter." },
+  { label: "Optimize Week", icon: WandSparkles, prompt: "Create an AI-optimized weekly calendar with revision blocks and focus sessions." },
 ];
 
 function AssistantMarkdown({ text }) {

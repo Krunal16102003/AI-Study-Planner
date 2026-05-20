@@ -137,8 +137,16 @@ export default function StudyAnalytics({ summary, analytics, loading = false }) 
       </section>
 
       <DashboardCard className="dashboard-extra premium-dashboard-card ai-insight-panel">
-        <h2 className="flex items-center gap-2"><Sparkles size={20} /> AI Insights</h2>
-        <p className="note">{aiInsight}</p>
+        <div className="ai-insight-panel__content">
+          <div>
+            <span className="ai-dashboard-eyebrow"><Sparkles size={14} /> AI Insights</span>
+            <h2 className="flex items-center gap-2">Smart Study Recommendations</h2>
+            <p className="note">{aiInsight}</p>
+          </div>
+          <div className="ai-hologram" aria-hidden="true">
+            <span /><span /><span /><span /><i />
+          </div>
+        </div>
         {displayAnalytics?.ai_insights?.length > 1 && (
           <div className="ai-insight-list">
             {displayAnalytics.ai_insights.slice(1, 4).map((insight) => (
